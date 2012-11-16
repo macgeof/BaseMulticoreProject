@@ -21,10 +21,10 @@ package com.generatorsystems.base.cores.tools.messages
 		public static const GET:String = 'get';
 		public static const SET:String = 'set';
 		
-		public function UIQueryMessage( action:String, name:String, component:UIComponent=null)
+		public function UIQueryMessage( __action:String, __name:String, __component:UIComponent=null)
 		{
-			var headers:Object = { action:action, name:name };
-			super( Message.NORMAL, headers, component );
+			var __headers:Object = { action:__action, name:__name };
+			super( Message.NORMAL, __headers, __component );
 		}
 		/**
 		 * Get UIQuery Action (GET or SET).

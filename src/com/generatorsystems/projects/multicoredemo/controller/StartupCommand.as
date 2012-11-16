@@ -5,9 +5,9 @@
  */
 package com.generatorsystems.projects.multicoredemo.controller
 {
-    import com.generatorsystems.projects.multicoredemo.ApplicationFacade;
+    import com.generatorsystems.projects.multicoredemo.ShellFacade;
     import com.generatorsystems.projects.multicoredemo.tools.ShellJunctionMediator;
-    import com.generatorsystems.projects.multicoredemo.view.ApplicationMediator;
+    import com.generatorsystems.projects.multicoredemo.view.ShellMediator;
     import com.generatorsystems.projects.multicoredemo.view.LoggerModuleMediator;
     
     import org.puremvc.as3.multicore.interfaces.ICommand;
@@ -45,10 +45,10 @@ package com.generatorsystems.projects.multicoredemo.controller
 
 			// Create and Register the Application and its Mediator
         	var app:BaseMulticoreProject = note.getBody() as BaseMulticoreProject;
-       		facade.registerMediator(new ApplicationMediator(ApplicationMediator.NAME, app));
+       		facade.registerMediator(new ShellMediator(ShellMediator.NAME, app));
 			
 			// Request the Log Button UI from the Logger Module       		
-			sendNotification(ApplicationFacade.REQUEST_LOG_BUTTON);
+			sendNotification(ShellFacade.REQUEST_LOG_BUTTON);
         }
         
     }

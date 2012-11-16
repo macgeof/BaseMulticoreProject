@@ -4,9 +4,9 @@ package com.generatorsystems.base.cores.tools.messages
 	
 	public class BaseCoreMessage extends Message
 	{
-		public function BaseCoreMessage(type:String, header:Object=null, body:Object=null, priority:int=5)
+		public function BaseCoreMessage(__type:String, __header:Object=null, __body:Object=null, __priority:int=5)
 		{
-			super(type, header, body, priority);
+			super(__type, __header, __body, __priority);
 		}
 	}
 }

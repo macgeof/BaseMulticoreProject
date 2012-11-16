@@ -12,15 +12,15 @@ package com.generatorsystems.base.cores.tools.messages
 		
 		public var logLevel:Number;
 
-		public function LogFilterMessage( action:String, logLevel:Number=0 )
+		public function LogFilterMessage( __action:String, __logLevel:Number=0 )
 		{
-			super( action, LOG_FILTER_NAME, null, {logLevel:logLevel});
-			this.logLevel=logLevel; 
+			super( __action, LOG_FILTER_NAME, null, {logLevel:__logLevel});
+			this.logLevel=__logLevel; 
 		}
 		
-		public static function filterLogByLevel( message:IPipeMessage, params:Object):void		
+		public static function filterLogByLevel( __message:IPipeMessage, __params:Object):void		
 		{
-			if (message.getHeader().logLevel > params.logLevel) { throw new Error(); }
+			if (__message.getHeader().logLevel > __params.logLevel) { throw new Error(); }
 		}
 		
 	}

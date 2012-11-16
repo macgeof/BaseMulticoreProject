@@ -5,7 +5,7 @@
  */
 package com.generatorsystems.puremvc.multicore.cores.logger.controller
 {
-    import com.generatorsystems.puremvc.multicore.cores.logger.ApplicationFacade;
+    import com.generatorsystems.puremvc.multicore.cores.logger.LoggerFacade;
     import com.generatorsystems.puremvc.multicore.cores.logger.model.LoggerProxy;
     import com.generatorsystems.puremvc.multicore.cores.logger.view.components.LogWindow;
     
@@ -34,7 +34,7 @@ package com.generatorsystems.puremvc.multicore.cores.logger.controller
 			var proxy:LoggerProxy = facade.retrieveProxy(LoggerProxy.NAME) as LoggerProxy;
 			var logWindow:LogWindow = new LogWindow();
 			logWindow.messages = proxy.messages;
-			sendNotification( ApplicationFacade.EXPORT_LOG_WINDOW, logWindow );
+			sendNotification( LoggerFacade.EXPORT_LOG_WINDOW, logWindow );
         }
         
     }

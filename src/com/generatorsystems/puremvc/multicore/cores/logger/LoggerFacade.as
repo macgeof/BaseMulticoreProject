@@ -5,17 +5,16 @@
  */
 package com.generatorsystems.puremvc.multicore.cores.logger
 {
+	import com.generatorsystems.base.cores.BaseCoreFacade;
 	import com.generatorsystems.puremvc.multicore.cores.logger.controller.CreateLogButtonCommand;
 	import com.generatorsystems.puremvc.multicore.cores.logger.controller.CreateLogWindowCommand;
 	import com.generatorsystems.puremvc.multicore.cores.logger.controller.LogMessageCommand;
 	import com.generatorsystems.puremvc.multicore.cores.logger.controller.StartupCommand;
-	
-	import org.puremvc.as3.multicore.patterns.facade.Facade;
 
 	/**
 	 * Application Facade for Logger Module.
 	 */ 
-	public class ApplicationFacade extends Facade
+	public class LoggerFacade extends BaseCoreFacade
 	{
         public static const STARTUP:String 				= 'startup';
         public static const LOG_MSG:String 				= 'logMessage';
@@ -24,18 +23,18 @@ package com.generatorsystems.puremvc.multicore.cores.logger
         public static const EXPORT_LOG_BUTTON:String	= 'exportLogButton';
         public static const EXPORT_LOG_WINDOW:String	= 'exportLogWindow';
                 
-        public function ApplicationFacade( key:String )
+        public function LoggerFacade( __key:String )
         {
-            super(key);    
+            super(__key);    
         }
 
         /**
          * ApplicationFacade Factory Method
          */
-        public static function getInstance( key:String ) : ApplicationFacade 
+        public static function getInstance( __key:String ) : LoggerFacade 
         {
-            if ( instanceMap[ key ] == null ) instanceMap[ key ]  = new ApplicationFacade( key );
-            return instanceMap[ key ] as ApplicationFacade;
+            if ( instanceMap[ __key ] == null ) instanceMap[ __key ]  = new LoggerFacade( __key );
+            return instanceMap[ __key ] as LoggerFacade;
         }
         
         /**
@@ -55,9 +54,9 @@ package com.generatorsystems.puremvc.multicore.cores.logger
          * 
          * @param app a reference to the application component 
          */  
-        public function startup( app:LoggerModule ):void
+        public function startup( __app:LoggerModule ):void
         {
-            sendNotification( STARTUP, app );
+            sendNotification( STARTUP, __app );
         }
 	}
 }

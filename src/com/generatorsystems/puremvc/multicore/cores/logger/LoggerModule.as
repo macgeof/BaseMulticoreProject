@@ -5,9 +5,9 @@
  */
 package com.generatorsystems.puremvc.multicore.cores.logger
 {
-	import com.generatorsystems.base.cores.tools.PipeAwareModule;
+	import com.generatorsystems.base.cores.BasePipeAwareModuleCore;
 
-	public class LoggerModule extends PipeAwareModule
+	public class LoggerModule extends BasePipeAwareModuleCore
 	{
 		public static const NAME:String 			= 'LoggerModule';
 		public static const LOG_BUTTON_UI:String 	= 'LogButtonUI';
@@ -15,8 +15,8 @@ package com.generatorsystems.puremvc.multicore.cores.logger
 		
 		public function LoggerModule()
 		{
-			super(ApplicationFacade.getInstance( NAME ));
-			ApplicationFacade(facade).startup( this );
+			super(LoggerFacade.getInstance( NAME ));
+			LoggerFacade(_facade).startup( this );
 		}
 1
 	}

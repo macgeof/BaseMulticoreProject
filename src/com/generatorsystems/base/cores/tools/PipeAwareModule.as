@@ -36,10 +36,10 @@ package com.generatorsystems.base.cores.tools
 		 * In subclass, create appropriate facade and pass 
 		 * to super.</P>
 		 */
-		public function PipeAwareModule( facade:IFacade )
+		public function PipeAwareModule( __facade:IFacade )
 		{
 			super();
-			this.facade = facade;
+			this._facade = __facade;
 		}
 		
 		/**
@@ -47,9 +47,9 @@ package com.generatorsystems.base.cores.tools
 		 * <P>
 		 * Registers an input pipe with this module's Junction.
 		 */
-		public function acceptInputPipe( name:String, pipe:IPipeFitting ):void
+		public function acceptInputPipe( __name:String, __pipe:IPipeFitting ):void
 		{
-			facade.sendNotification( JunctionMediator.ACCEPT_INPUT_PIPE, pipe, name );							
+			_facade.sendNotification( JunctionMediator.ACCEPT_INPUT_PIPE, __pipe, __name );							
 		}
 		
 		/**
@@ -57,11 +57,11 @@ package com.generatorsystems.base.cores.tools
 		 * <P>
 		 * Registers an input pipe with this module's Junction.
 		 */
-		public function acceptOutputPipe( name:String, pipe:IPipeFitting ):void
+		public function acceptOutputPipe( __name:String, __pipe:IPipeFitting ):void
 		{
-			facade.sendNotification( JunctionMediator.ACCEPT_OUTPUT_PIPE, pipe, name );							
+			_facade.sendNotification( JunctionMediator.ACCEPT_OUTPUT_PIPE, __pipe, __name );							
 		}
 		
-		protected var facade:IFacade;
+		protected var _facade:IFacade;
 	}
 }

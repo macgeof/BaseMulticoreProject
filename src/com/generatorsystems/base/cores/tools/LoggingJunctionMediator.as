@@ -15,19 +15,19 @@ package com.generatorsystems.base.cores.tools
 	import org.puremvc.as3.multicore.interfaces.INotification;
 	import org.puremvc.as3.multicore.utilities.pipes.messages.FilterControlMessage;
 	import org.puremvc.as3.multicore.utilities.pipes.plumbing.Junction;
-	import org.puremvc.as3.multicore.utilities.pipes.plumbing.JunctionMediator;
 	
-	public class LoggingJunctionMediator extends JunctionMediator
+	public class LoggingJunctionMediator extends BaseCoreJunctionMediator
 	{
+		public static const NAME:String = "LoggingJunctionMediator";
 
 		/**
 		 * Constructor.
 		 * <P>
 		 * Handles sending LogMessages.</P>
 		 */ 		
-		public function LoggingJunctionMediator( name:String, junction:Junction )
+		public function LoggingJunctionMediator( __name:String, __junction:Junction )
 		{
-			super( name, junction );
+			super( __name, __junction );
 			
 		}
 
@@ -38,10 +38,10 @@ package com.generatorsystems.base.cores.tools
 		 */
 		override public function listNotificationInterests():Array
 		{
-			var interests:Array = super.listNotificationInterests();
-			interests.push(LogMessage.SEND_TO_LOG);
-			interests.push(LogFilterMessage.SET_LOG_LEVEL);
-			return interests;
+			var __interests:Array = super.listNotificationInterests();
+			__interests.push(LogMessage.SEND_TO_LOG);
+			__interests.push(LogFilterMessage.SET_LOG_LEVEL);
+			return __interests;
 		}
 
 		/**
@@ -51,15 +51,15 @@ package com.generatorsystems.base.cores.tools
 		 * Send messages to the logger and set the log level as well as
 		 * IPipeAware actions (accepting input/output pipes).</P>
 		 */		
-		override public function handleNotification( note:INotification ):void
+		override public function handleNotification( __note:INotification ):void
 		{
 			
-			switch( note.getName() )
+			switch( __note.getName() )
 			{
                 // Send messages to the Log
                 case LogMessage.SEND_TO_LOG:
                     var level:int;
-                    switch (note.getType())
+                    switch (__note.getType())
                     {
                         case LogMessage.LEVELS[LogMessage.DEBUG]:
                             level = LogMessage.DEBUG;
@@ -86,23 +86,23 @@ package com.generatorsystems.base.cores.tools
                             break;
                         
                     }
-                    var logMessage:LogMessage = new LogMessage( level, this.multitonKey, note.getBody() as String);
-                    junction.sendMessage( PipeAwareModule.STDLOG, logMessage );
+                    var __logMessage:LogMessage = new LogMessage( level, this.multitonKey, __note.getBody() as String);
+                    junction.sendMessage( PipeAwareModule.STDLOG, __logMessage );
                     break;
 
                 // Modify the Log Level filter 
                 case LogFilterMessage.SET_LOG_LEVEL:
-                    var logLevel:Number = note.getBody() as Number;
-                    var setLogLevelMessage:LogFilterMessage = new LogFilterMessage(FilterControlMessage.SET_PARAMS, logLevel);
-                    var changedLevel:Boolean = junction.sendMessage( PipeAwareModule.STDLOG, setLogLevelMessage );
-                    var changedLevelMessage:LogMessage = new LogMessage( LogMessage.CHANGE, this.multitonKey, "Changed Log Level to: "+LogMessage.LEVELS[logLevel])
-                    var logChanged:Boolean = junction.sendMessage( PipeAwareModule.STDLOG, changedLevelMessage );
+                    var __logLevel:Number = __note.getBody() as Number;
+                    var __setLogLevelMessage:LogFilterMessage = new LogFilterMessage(FilterControlMessage.SET_PARAMS, __logLevel);
+                    var __changedLevel:Boolean = junction.sendMessage( PipeAwareModule.STDLOG, __setLogLevelMessage );
+                    var __changedLevelMessage:LogMessage = new LogMessage( LogMessage.CHANGE, this.multitonKey, "Changed Log Level to: "+LogMessage.LEVELS[__logLevel])
+                    var __logChanged:Boolean = junction.sendMessage( PipeAwareModule.STDLOG, __changedLevelMessage );
                     break;
 
 				
 				// And let super handle the rest (ACCEPT_OUTPUT_PIPE, ACCEPT_INPUT_PIPE, SEND_TO_LOG)								
 				default:
-					super.handleNotification(note);
+					super.handleNotification(__note);
 					
 			}
 		}

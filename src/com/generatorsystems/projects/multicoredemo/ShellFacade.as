@@ -1,11 +1,13 @@
 package com.generatorsystems.projects.multicoredemo
 {
+	import com.generatorsystems.base.cores.BaseCoreFacade;
 	import com.generatorsystems.projects.multicoredemo.controller.StartupCommand;
 	
 	import org.puremvc.as3.multicore.interfaces.IFacade;
-	import org.puremvc.as3.multicore.patterns.facade.Facade;
 	
-	public class ApplicationFacade extends Facade implements IFacade
+	import spark.components.Application;
+	
+	public class ShellFacade extends BaseCoreFacade implements IFacade
 	{
 		public static const NAME:String = "ApplicationFacade";
 		
@@ -21,18 +23,18 @@ package com.generatorsystems.projects.multicoredemo
 		public static const SHOW_FEED_WINDOW:String 		= 'showFeedWindow';
 		public static const REMOVE_FEED_WINDOW:String 		= 'removeFeedWindow';
 		
-		public function ApplicationFacade(key:String)
+		public function ShellFacade(__key:String)
 		{
-			super(key);
+			super(__key);
 		}
 		
 		/**
 		 * ApplicationFacade Factory Method
 		 */
-		public static function getInstance( key:String ) : ApplicationFacade 
+		public static function getInstance( __key:String ) : ShellFacade 
 		{
-			if ( instanceMap[ key ] == null ) instanceMap[ key ]  = new ApplicationFacade( key );
-			return instanceMap[ key ] as ApplicationFacade;
+			if ( instanceMap[ __key ] == null ) instanceMap[ __key ]  = new ShellFacade( __key );
+			return instanceMap[ __key ] as ShellFacade;
 		}
 		
 		/**
@@ -49,9 +51,9 @@ package com.generatorsystems.projects.multicoredemo
 		 * 
 		 * @param app a reference to the application component 
 		 */  
-		public function startup( app:BaseMulticoreProject ):void
+		public function startup( __app:Application ):void
 		{
-			sendNotification( STARTUP, app );
+			sendNotification( STARTUP, __app );
 		}
 	}
 }

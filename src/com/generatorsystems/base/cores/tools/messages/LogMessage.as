@@ -21,16 +21,16 @@ package com.generatorsystems.base.cores.tools.messages
 
 		public static const STDLOG:String = 'standardLog';
 		
-		public function LogMessage( logLevel:int, sender:String, message:String  )
+		public function LogMessage( __logLevel:int, __sender:String, __message:String  )
 		{
-			var time:String = new Date().toString();
-			var headers:Object = {logLevel:logLevel, sender:sender, time:time};
-			super( Message.NORMAL, headers, message );
+			var __time:String = new Date().toString();
+			var __headers:Object = {logLevel:__logLevel, sender:__sender, time:__time};
+			super( Message.NORMAL, __headers, __message );
 		}
 		
-		public function set logLevel(logLevel:int):void
+		public function set logLevel(__logLevel:int):void
 		{
-			header.logLevel = logLevel;
+			header.logLevel = __logLevel;
 		}
 
 		public function get logLevel():int

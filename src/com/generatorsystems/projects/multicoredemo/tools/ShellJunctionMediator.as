@@ -9,7 +9,7 @@ package com.generatorsystems.projects.multicoredemo.tools
 	import com.generatorsystems.base.cores.tools.PipeAwareModule;
 	import com.generatorsystems.base.cores.tools.messages.LogMessage;
 	import com.generatorsystems.base.cores.tools.messages.UIQueryMessage;
-	import com.generatorsystems.projects.multicoredemo.ApplicationFacade;
+	import com.generatorsystems.projects.multicoredemo.ShellFacade;
 	import com.generatorsystems.puremvc.multicore.cores.logger.LoggerModule;
 	
 	import org.puremvc.as3.multicore.interfaces.INotification;
@@ -50,7 +50,7 @@ package com.generatorsystems.projects.multicoredemo.tools
 			
 			// The STDLOG pipe from the shell to the logger
 			junction.registerPipe( PipeAwareModule.STDLOG, Junction.OUTPUT, new Pipe() );
-			sendNotification(ApplicationFacade.CONNECT_SHELL_TO_LOGGER, junction );
+			sendNotification(ShellFacade.CONNECT_SHELL_TO_LOGGER, junction );
 
 		}
 		
@@ -62,36 +62,36 @@ package com.generatorsystems.projects.multicoredemo.tools
 		override public function listNotificationInterests():Array
 		{
 			var interests:Array = super.listNotificationInterests();
-			interests.push( ApplicationFacade.REQUEST_LOG_WINDOW );
-			interests.push( ApplicationFacade.REQUEST_LOG_BUTTON );
-			interests.push( ApplicationFacade.CONNECT_MODULE_TO_SHELL );
+			interests.push( ShellFacade.REQUEST_LOG_WINDOW );
+			interests.push( ShellFacade.REQUEST_LOG_BUTTON );
+			interests.push( ShellFacade.CONNECT_MODULE_TO_SHELL );
 			return interests;
 		}
 
 		/**
 		 * Handle ShellJunction related Notifications.
 		 */
-		override public function handleNotification( note:INotification ):void
+		override public function handleNotification( __note:INotification ):void
 		{
 			
-			switch( note.getName() )
+			switch( __note.getName() )
 			{
 							
-				case ApplicationFacade.REQUEST_LOG_BUTTON:
+				case ShellFacade.REQUEST_LOG_BUTTON:
 					sendNotification(LogMessage.SEND_TO_LOG,"Requesting log button from LoggerModule.",LogMessage.LEVELS[LogMessage.DEBUG]);
 					junction.sendMessage(PipeAwareModule.STDLOG,new UIQueryMessage(UIQueryMessage.GET,LoggerModule.LOG_BUTTON_UI));
 					break;
 
-				case ApplicationFacade.REQUEST_LOG_WINDOW:
+				case ShellFacade.REQUEST_LOG_WINDOW:
 					sendNotification(LogMessage.SEND_TO_LOG,"Requesting log window from LoggerModule.",LogMessage.LEVELS[LogMessage.DEBUG]);
 					junction.sendMessage(PipeAwareModule.STDLOG,new UIQueryMessage(UIQueryMessage.GET,LoggerModule.LOG_WINDOW_UI));
 					break;
 
-				case  ApplicationFacade.CONNECT_MODULE_TO_SHELL:
+				case  ShellFacade.CONNECT_MODULE_TO_SHELL:
 					sendNotification(LogMessage.SEND_TO_LOG,"Connecting new module instance to Shell.",LogMessage.LEVELS[LogMessage.DEBUG]);
 
 					// Connect a module's STDSHELL to the shell's STDIN
-					var module:IPipeAware = note.getBody() as IPipeAware;
+					var module:IPipeAware = __note.getBody() as IPipeAware;
 					var moduleToShell:Pipe = new Pipe();
 					module.acceptOutputPipe(PipeAwareModule.STDSHELL, moduleToShell);
 					var shellIn:TeeMerge = junction.retrievePipe(PipeAwareModule.STDIN) as TeeMerge;
@@ -106,7 +106,7 @@ package com.generatorsystems.projects.multicoredemo.tools
 
 				// Let super handle the rest (ACCEPT_OUTPUT_PIPE, ACCEPT_INPUT_PIPE, SEND_TO_LOG)								
 				default:
-					super.handleNotification(note);
+					super.handleNotification(__note);
 					
 			}
 		}
@@ -130,22 +130,26 @@ package com.generatorsystems.projects.multicoredemo.tools
 		 * Also, it is logging its actions by sending INFO messages
 		 * to the STDLOG output pipe.</P> 
 		 */
-		override public function handlePipeMessage( message:IPipeMessage ):void
+		override public function handlePipeMessage( __message:IPipeMessage ):void
 		{
-			if ( message is UIQueryMessage )
+			if ( __message is UIQueryMessage )
 			{
-				switch ( UIQueryMessage(message).name )
+				switch ( UIQueryMessage(__message).name )
 				{
 					case LoggerModule.LOG_BUTTON_UI:
-						sendNotification(ApplicationFacade.SHOW_LOG_BUTTON, UIQueryMessage(message).component, UIQueryMessage(message).name )
+						sendNotification(ShellFacade.SHOW_LOG_BUTTON, UIQueryMessage(__message).component, UIQueryMessage(__message).name )
 						junction.sendMessage(PipeAwareModule.STDLOG,new LogMessage(LogMessage.INFO,this.multitonKey,'Recieved the Log Button on STDSHELL'));
 						break;
 
 					case LoggerModule.LOG_WINDOW_UI:
-						sendNotification(ApplicationFacade.SHOW_LOG_WINDOW, UIQueryMessage(message).component, UIQueryMessage(message).name )
+						sendNotification(ShellFacade.SHOW_LOG_WINDOW, UIQueryMessage(__message).component, UIQueryMessage(__message).name )
 						junction.sendMessage(PipeAwareModule.STDLOG,new LogMessage(LogMessage.INFO,this.multitonKey,'Recieved the Log Window on STDSHELL'));
 						break;
 				}
+			}
+			else if (__message is LogMessage)
+			{
+				junction.sendMessage(PipeAwareModule.STDLOG, __message);
 			}
 		}
 	}

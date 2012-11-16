@@ -6,11 +6,11 @@
 package com.generatorsystems.projects.multicoredemo.view
 {
 	import com.generatorsystems.base.cores.tools.PipeAwareModule;
-	import com.generatorsystems.projects.multicoredemo.ApplicationFacade;
+	import com.generatorsystems.base.cores.view.BaseCoreMediator;
+	import com.generatorsystems.projects.multicoredemo.ShellFacade;
 	import com.generatorsystems.puremvc.multicore.cores.logger.LoggerModule;
 	
 	import org.puremvc.as3.multicore.interfaces.INotification;
-	import org.puremvc.as3.multicore.patterns.mediator.Mediator;
 	import org.puremvc.as3.multicore.utilities.pipes.interfaces.IPipeAware;
 	import org.puremvc.as3.multicore.utilities.pipes.interfaces.IPipeFitting;
 	import org.puremvc.as3.multicore.utilities.pipes.plumbing.Junction;
@@ -26,7 +26,7 @@ package com.generatorsystems.projects.multicoredemo.view
 	 * LoggerModule, which implements IPipeAware, an interface that
 	 * requires methods for accepting input and output pipes.</P>
 	 */
-	public class LoggerModuleMediator extends Mediator
+	public class LoggerModuleMediator extends BaseCoreMediator
 	{
 		public static const NAME:String = 'LoggerModuleMediator';
 		
@@ -40,8 +40,8 @@ package com.generatorsystems.projects.multicoredemo.view
 		 */
 		override public function listNotificationInterests():Array
 		{
-			return [ ApplicationFacade.CONNECT_MODULE_TO_LOGGER,
-					 ApplicationFacade.CONNECT_SHELL_TO_LOGGER 
+			return [ ShellFacade.CONNECT_MODULE_TO_LOGGER,
+					 ShellFacade.CONNECT_SHELL_TO_LOGGER 
 			       ];	
 		}
 		
@@ -50,32 +50,32 @@ package com.generatorsystems.projects.multicoredemo.view
 		 * <P>
 		 * Connecting modules and the Shell to the LoggerModule.
 		 */
-		override public function handleNotification( note:INotification ):void
+		override public function handleNotification( __note:INotification ):void
 		{
-			switch( note.getName() )
+			switch( __note.getName() )
 			{
 				// Connect any Module's STDLOG to the logger's STDIN
-				case  ApplicationFacade.CONNECT_MODULE_TO_LOGGER:
-					var module:IPipeAware = note.getBody() as IPipeAware;
-					var pipe:Pipe = new Pipe();
-					module.acceptOutputPipe(PipeAwareModule.STDLOG,pipe);
-					logger.acceptInputPipe(PipeAwareModule.STDIN,pipe);
+				case  ShellFacade.CONNECT_MODULE_TO_LOGGER:
+					var __module:IPipeAware = __note.getBody() as IPipeAware;
+					var __pipe:Pipe = new Pipe();
+					__module.acceptOutputPipe(PipeAwareModule.STDLOG,__pipe);
+					logger.acceptInputPipe(PipeAwareModule.STDIN,__pipe);
 					break;
 
 				// Bidirectionally connect shell and logger on STDLOG/STDSHELL
-				case  ApplicationFacade.CONNECT_SHELL_TO_LOGGER:
+				case  ShellFacade.CONNECT_SHELL_TO_LOGGER:
 					// The junction was passed from ShellJunctionMediator
-					var junction:Junction = note.getBody() as Junction;
+					var __junction:Junction = __note.getBody() as Junction;
 					
 					// Connect the shell's STDLOG to the logger's STDIN
-					var shellToLog:IPipeFitting = junction.retrievePipe(PipeAwareModule.STDLOG);
-					logger.acceptInputPipe(PipeAwareModule.STDIN, shellToLog);
+					var __shellToLog:IPipeFitting = __junction.retrievePipe(PipeAwareModule.STDLOG);
+					logger.acceptInputPipe(PipeAwareModule.STDIN, __shellToLog);
 					
 					// Connect the logger's STDSHELL to the shell's STDIN
-					var logToShell:Pipe = new Pipe();
-					var shellIn:TeeMerge = junction.retrievePipe(PipeAwareModule.STDIN) as TeeMerge;
-					shellIn.connectInput(logToShell);
-					logger.acceptOutputPipe(PipeAwareModule.STDSHELL,logToShell);
+					var __logToShell:Pipe = new Pipe();
+					var __shellIn:TeeMerge = __junction.retrievePipe(PipeAwareModule.STDIN) as TeeMerge;
+					__shellIn.connectInput(__logToShell);
+					logger.acceptOutputPipe(PipeAwareModule.STDSHELL,__logToShell);
 					break;
 			}
 		}

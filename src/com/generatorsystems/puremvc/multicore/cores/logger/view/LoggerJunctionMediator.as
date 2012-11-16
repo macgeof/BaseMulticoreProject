@@ -5,12 +5,13 @@
  */
 package com.generatorsystems.puremvc.multicore.cores.logger.view
 {
+	import com.generatorsystems.base.cores.tools.BaseCoreJunctionMediator;
 	import com.generatorsystems.base.cores.tools.PipeAwareModule;
 	import com.generatorsystems.base.cores.tools.messages.LogFilterMessage;
 	import com.generatorsystems.base.cores.tools.messages.LogMessage;
 	import com.generatorsystems.base.cores.tools.messages.UIQueryMessage;
+	import com.generatorsystems.puremvc.multicore.cores.logger.LoggerFacade;
 	import com.generatorsystems.puremvc.multicore.cores.logger.LoggerModule;
-	import com.generatorsystems.puremvc.multicore.cores.logger.ApplicationFacade;
 	
 	import mx.core.UIComponent;
 	
@@ -23,7 +24,7 @@ package com.generatorsystems.puremvc.multicore.cores.logger.view
 	import org.puremvc.as3.multicore.utilities.pipes.plumbing.PipeListener;
 	import org.puremvc.as3.multicore.utilities.pipes.plumbing.TeeMerge;
 	
-	public class LoggerJunctionMediator extends JunctionMediator
+	public class LoggerJunctionMediator extends BaseCoreJunctionMediator
 	{
 		public static const NAME:String = 'LoggerJunctionMediator';
 
@@ -57,14 +58,14 @@ package com.generatorsystems.puremvc.multicore.cores.logger.view
 		 */
 		override public function onRegister():void
 		{
-			var teeMerge:TeeMerge = new TeeMerge();
-			var filter:Filter = new Filter( LogFilterMessage.LOG_FILTER_NAME,
+			var __teeMerge:TeeMerge = new TeeMerge();
+			var __filter:Filter = new Filter( LogFilterMessage.LOG_FILTER_NAME,
 										    null,
 										    LogFilterMessage.filterLogByLevel as Function
 										    );
-			filter.connect(new PipeListener(this,handlePipeMessage));
-			teeMerge.connect(filter);
-			junction.registerPipe( PipeAwareModule.STDIN, Junction.INPUT, teeMerge );
+			__filter.connect(new PipeListener(this,handlePipeMessage));
+			__teeMerge.connect(__filter);
+			junction.registerPipe( PipeAwareModule.STDIN, Junction.INPUT, __teeMerge );
 		}
 		
 		/**
@@ -74,11 +75,10 @@ package com.generatorsystems.puremvc.multicore.cores.logger.view
 		 */
 		override public function listNotificationInterests():Array
 		{
-			var interests:Array = super.listNotificationInterests();
-			interests.push(ApplicationFacade.EXPORT_LOG_BUTTON);
-			interests.push(ApplicationFacade.EXPORT_LOG_WINDOW);
-			trace(interests.toString());
-			return interests;
+			var __interests:Array = super.listNotificationInterests();
+			__interests.push(LoggerFacade.EXPORT_LOG_BUTTON);
+			__interests.push(LoggerFacade.EXPORT_LOG_WINDOW);
+			return __interests;
 		}
 
 		/**
@@ -94,42 +94,48 @@ package com.generatorsystems.puremvc.multicore.cores.logger.view
 		 * is Merging Tee and not a pipe, so the details of 
 		 * connecting it differ.</P>
 		 */		
-		override public function handleNotification( note:INotification ):void
+		override public function handleNotification( __note:INotification ):void
 		{
+			var __logMessage:LogMessage;
+			var __logged:Boolean;
 			
-			switch( note.getName() )
+			switch( __note.getName() )
 			{
 				// Send the LogButton UI Component 
-				case ApplicationFacade.EXPORT_LOG_BUTTON:
-					var logButtonMessage:UIQueryMessage = new UIQueryMessage( UIQueryMessage.SET, LoggerModule.LOG_BUTTON_UI, UIComponent(note.getBody()) );
-					var buttonExported:Boolean = junction.sendMessage( PipeAwareModule.STDSHELL, logButtonMessage );
+				case LoggerFacade.EXPORT_LOG_BUTTON:
+					var __logButtonMessage:UIQueryMessage = new UIQueryMessage( UIQueryMessage.SET, LoggerModule.LOG_BUTTON_UI, UIComponent(__note.getBody()) );
+					__logMessage = new LogMessage(LogMessage.INFO, this.multitonKey, "LogButton about to be exported from Logger core");
+					__logged = junction.sendMessage( PipeAwareModule.STDSHELL, __logMessage);
+					var buttonExported:Boolean = junction.sendMessage( PipeAwareModule.STDSHELL, __logButtonMessage );
 					break;
 				
 				// Send the LogWindow UI Component 
-				case ApplicationFacade.EXPORT_LOG_WINDOW:
-					var logWindowMessage:UIQueryMessage = new UIQueryMessage( UIQueryMessage.SET, LoggerModule.LOG_WINDOW_UI, UIComponent(note.getBody()) );
-					junction.sendMessage( PipeAwareModule.STDSHELL, logWindowMessage );
+				case LoggerFacade.EXPORT_LOG_WINDOW:
+					var __logWindowMessage:UIQueryMessage = new UIQueryMessage( UIQueryMessage.SET, LoggerModule.LOG_WINDOW_UI, UIComponent(__note.getBody()) );
+					__logMessage = new LogMessage(LogMessage.INFO, this.multitonKey, "LogWindow about to be exported from Logger core");
+					__logged = junction.sendMessage( PipeAwareModule.STDSHELL, __logMessage);
+					junction.sendMessage( PipeAwareModule.STDSHELL, __logWindowMessage );
 					break;
 				
 				// Add an input pipe (special handling for LoggerModule) 
 				case JunctionMediator.ACCEPT_INPUT_PIPE:
-					var name:String = note.getType();
+					var __name:String = __note.getType();
 					
 					// STDIN is a Merging Tee. Overriding super to handle this.
-					if (name == PipeAwareModule.STDIN) {
-						var pipe:IPipeFitting = note.getBody() as IPipeFitting;
-						var tee:TeeMerge = junction.retrievePipe(PipeAwareModule.STDIN) as TeeMerge;
-						tee.connectInput(pipe);
+					if (__name == PipeAwareModule.STDIN) {
+						var __pipe:IPipeFitting = __note.getBody() as IPipeFitting;
+						var __tee:TeeMerge = junction.retrievePipe(PipeAwareModule.STDIN) as TeeMerge;
+						__tee.connectInput(__pipe);
 					} 
 					// Use super for any other input pipe
 					else {
-						super.handleNotification(note); 
+						super.handleNotification(__note); 
 					} 
 					break;
 
 				// And let super handle the rest (ACCEPT_OUTPUT_PIPE)								
 				default:
-					super.handleNotification(note);
+					super.handleNotification(__note);
 					
 			}
 		}
@@ -137,22 +143,22 @@ package com.generatorsystems.puremvc.multicore.cores.logger.view
 		/**
 		 * Handle incoming pipe messages.
 		 */
-		override public function handlePipeMessage( message:IPipeMessage ):void
+		override public function handlePipeMessage( __message:IPipeMessage ):void
 		{
-			if ( message is LogMessage ) 
+			if ( __message is LogMessage ) 
 			{
-				sendNotification( ApplicationFacade.LOG_MSG, message );
+				sendNotification( LoggerFacade.LOG_MSG, __message );
 			} 
-			else if ( message is UIQueryMessage )
+			else if ( __message is UIQueryMessage )
 			{
-				switch ( UIQueryMessage(message).name )
+				switch ( UIQueryMessage(__message).name )
 				{
 					case LoggerModule.LOG_BUTTON_UI:
-						sendNotification(ApplicationFacade.CREATE_LOG_BUTTON)
+						sendNotification(LoggerFacade.CREATE_LOG_BUTTON)
 						break;
 
 					case LoggerModule.LOG_WINDOW_UI:
-						sendNotification(ApplicationFacade.CREATE_LOG_WINDOW )
+						sendNotification(LoggerFacade.CREATE_LOG_WINDOW )
 						break;
 				}
 			}

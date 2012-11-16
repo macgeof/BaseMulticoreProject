@@ -5,9 +5,11 @@ package com.generatorsystems.base.cores.model
 	
 	public class BaseCoreProxy extends Proxy implements IProxy
 	{
-		public function BaseCoreProxy(proxyName:String=null, data:Object=null)
+		public static const NAME:String = "BaseCoreProxy";
+		
+		public function BaseCoreProxy(__proxyName:String=null, __data:Object=null)
 		{
-			super(proxyName, data);
+			super(__proxyName, __data);
 		}
 	}
 }

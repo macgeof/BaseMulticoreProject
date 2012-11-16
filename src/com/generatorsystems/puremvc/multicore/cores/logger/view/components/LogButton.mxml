@@ -4,7 +4,6 @@
 		  label="Log Messages: ({messages.length})">
 	<fx:Script>
 		<![CDATA[
-		import com.generatorsystems.base.cores.tools.messages.LogMessage;
 		import mx.collections.ArrayCollection;
 		[Bindable]
 		public var messages:ArrayCollection = new ArrayCollection();

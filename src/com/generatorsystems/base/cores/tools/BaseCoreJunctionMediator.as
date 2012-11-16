@@ -6,15 +6,16 @@ package com.generatorsystems.base.cores.tools
 	
 	public class BaseCoreJunctionMediator extends JunctionMediator
 	{
+		public static const NAME:String = "BaseCoreJunctionMediator";
 		
 		/**
 		 * Constructor.
 		 * <P>
 		 * Handles sending LogMessages.</P>
 		 */ 		
-		public function BaseCoreJunctionMediator( name:String, junction:Junction )
+		public function BaseCoreJunctionMediator( __name:String, __junction:Junction )
 		{
-			super( name, junction );
+			super( __name, __junction );
 			
 		}
 		
@@ -25,9 +26,9 @@ package com.generatorsystems.base.cores.tools
 		 */
 		override public function listNotificationInterests():Array
 		{
-			var interests:Array = super.listNotificationInterests();
+			var __interests:Array = super.listNotificationInterests();
 
-			return interests;
+			return __interests;
 		}
 		
 		/**
@@ -37,15 +38,15 @@ package com.generatorsystems.base.cores.tools
 		 * Send messages to the logger and set the log level as well as
 		 * IPipeAware actions (accepting input/output pipes).</P>
 		 */		
-		override public function handleNotification( note:INotification ):void
+		override public function handleNotification( __note:INotification ):void
 		{
 			
-			switch( note.getName() )
+			switch( __note.getName() )
 			{				
 				
 				// And let super handle the rest (ACCEPT_OUTPUT_PIPE, ACCEPT_INPUT_PIPE, SEND_TO_LOG)								
 				default:
-					super.handleNotification(note);
+					super.handleNotification(__note);
 					
 			}
 		}
