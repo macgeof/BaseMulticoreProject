@@ -2,7 +2,7 @@
 <s:Application xmlns:fx="http://ns.adobe.com/mxml/2009"
 			   xmlns:s="library://ns.adobe.com/flex/spark"
 			   applicationDPI="160"
-			   creationComplete="_facade.startup(this)">
+			   creationComplete="_facade.startup(this, StartupCommand)">
 	<s:layout>
 		<s:VerticalLayout/>
 	</s:layout>
@@ -14,13 +14,16 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import com.generatorsystems.base.cores.tools.messages.LogMessage;
+			import com.gb.puremvc.model.messages.LogMessage;
 			import com.generatorsystems.projects.multicoredemo.ShellFacade;
+			import com.generatorsystems.projects.multicoredemo.controller.StartupCommand;
 			
 			import mx.effects.easing.*;
+			import mx.events.EffectEvent;
 			
 			import spark.components.Button;
 			import spark.components.TitleWindow;
+			import spark.core.SpriteVisualElement;
 		
 			private var _facade:ShellFacade = ShellFacade.getInstance(NAME);
 			
@@ -47,7 +50,13 @@
 			*/
 			public function addLogWindow(__logWindow:TitleWindow):void
 			{
+				var __maskDispObj:SpriteVisualElement = new SpriteVisualElement();
+				__maskDispObj.graphics.beginFill(0xFF0000, 1);
+				__maskDispObj.graphics.drawRect(0,0,logBox.width,logBox.height);
+				__maskDispObj.graphics.endFill();
+				logBox.addElement(__maskDispObj);
 				logBox.addElementAt(__logWindow,0);
+				__logWindow.mask = __maskDispObj;
 			}
 			
 			/**
@@ -56,7 +65,17 @@
 			*/
 			public function removeLogWindow(__logWindow:TitleWindow):void
 			{
+				__logWindow.addEventListener(EffectEvent.EFFECT_END, _logWindowRemovedEffectHandler);
 				logBox.removeElement(__logWindow);
+			}
+			
+			protected function _logWindowRemovedEffectHandler(__event:EffectEvent):void
+			{
+				var __logWindow:TitleWindow = __event.currentTarget as TitleWindow;
+				__logWindow.removeEventListener(EffectEvent.EFFECT_END, _logWindowRemovedEffectHandler);
+				var __mask:SpriteVisualElement = __logWindow.mask as SpriteVisualElement;
+				__logWindow.mask = null;
+				logBox.removeElement(__mask);
 			}
 			
 			/**
@@ -86,13 +105,15 @@
 		<s:HGroup width="1280" height="40" gap="20" paddingBottom="10" paddingLeft="30"
 				  paddingRight="30" paddingTop="10" verticalAlign="middle">
 			<s:Label text="Log Level:"/>
-			<s:ComboBox id="cmbLogLevel" change="submit( LOG_LEVEL )"
+			<s:DropDownList id="cmbLogLevel" change="submit( LOG_LEVEL )"
 						dataProvider="{LogMessage.LEVELS}" selectedIndex="{LogMessage.DEBUG}"/>
 		</s:HGroup>
 	</s:VGroup>
 
 	
 	<!-- The Log Window  -->
-	<s:VGroup id="logBox" x="1" y="0" width="100%" height="100%">
+	<s:VGroup x="0" y="0" width="100%" height="100%">
+		<s:BorderContainer id="logBox" height="50%" width="100%" />
+		<s:BorderContainer id="coreContainer" height="50%" width="100%" />
 	</s:VGroup>
 </s:Application>

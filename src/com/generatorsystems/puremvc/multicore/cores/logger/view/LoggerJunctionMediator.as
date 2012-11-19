@@ -5,11 +5,10 @@
  */
 package com.generatorsystems.puremvc.multicore.cores.logger.view
 {
-	import com.generatorsystems.base.cores.tools.BaseCoreJunctionMediator;
-	import com.generatorsystems.base.cores.tools.PipeAwareModule;
-	import com.generatorsystems.base.cores.tools.messages.LogFilterMessage;
-	import com.generatorsystems.base.cores.tools.messages.LogMessage;
-	import com.generatorsystems.base.cores.tools.messages.UIQueryMessage;
+	import com.gb.puremvc.GBPipeAwareFlexCore;
+	import com.gb.puremvc.model.messages.LogFilterMessage;
+	import com.gb.puremvc.model.messages.LogMessage;
+	import com.gb.puremvc.model.messages.UIQueryMessage;
 	import com.generatorsystems.puremvc.multicore.cores.logger.LoggerFacade;
 	import com.generatorsystems.puremvc.multicore.cores.logger.LoggerModule;
 	
@@ -24,7 +23,7 @@ package com.generatorsystems.puremvc.multicore.cores.logger.view
 	import org.puremvc.as3.multicore.utilities.pipes.plumbing.PipeListener;
 	import org.puremvc.as3.multicore.utilities.pipes.plumbing.TeeMerge;
 	
-	public class LoggerJunctionMediator extends BaseCoreJunctionMediator
+	public class LoggerJunctionMediator extends JunctionMediator
 	{
 		public static const NAME:String = 'LoggerJunctionMediator';
 
@@ -65,7 +64,7 @@ package com.generatorsystems.puremvc.multicore.cores.logger.view
 										    );
 			__filter.connect(new PipeListener(this,handlePipeMessage));
 			__teeMerge.connect(__filter);
-			junction.registerPipe( PipeAwareModule.STDIN, Junction.INPUT, __teeMerge );
+			junction.registerPipe( GBPipeAwareFlexCore.STDIN, Junction.INPUT, __teeMerge );
 		}
 		
 		/**
@@ -105,16 +104,16 @@ package com.generatorsystems.puremvc.multicore.cores.logger.view
 				case LoggerFacade.EXPORT_LOG_BUTTON:
 					var __logButtonMessage:UIQueryMessage = new UIQueryMessage( UIQueryMessage.SET, LoggerModule.LOG_BUTTON_UI, UIComponent(__note.getBody()) );
 					__logMessage = new LogMessage(LogMessage.INFO, this.multitonKey, "LogButton about to be exported from Logger core");
-					__logged = junction.sendMessage( PipeAwareModule.STDSHELL, __logMessage);
-					var buttonExported:Boolean = junction.sendMessage( PipeAwareModule.STDSHELL, __logButtonMessage );
+					__logged = junction.sendMessage( GBPipeAwareFlexCore.STDSHELL, __logMessage);
+					var buttonExported:Boolean = junction.sendMessage( GBPipeAwareFlexCore.STDSHELL, __logButtonMessage );
 					break;
 				
 				// Send the LogWindow UI Component 
 				case LoggerFacade.EXPORT_LOG_WINDOW:
 					var __logWindowMessage:UIQueryMessage = new UIQueryMessage( UIQueryMessage.SET, LoggerModule.LOG_WINDOW_UI, UIComponent(__note.getBody()) );
 					__logMessage = new LogMessage(LogMessage.INFO, this.multitonKey, "LogWindow about to be exported from Logger core");
-					__logged = junction.sendMessage( PipeAwareModule.STDSHELL, __logMessage);
-					junction.sendMessage( PipeAwareModule.STDSHELL, __logWindowMessage );
+					__logged = junction.sendMessage( GBPipeAwareFlexCore.STDSHELL, __logMessage);
+					junction.sendMessage( GBPipeAwareFlexCore.STDSHELL, __logWindowMessage );
 					break;
 				
 				// Add an input pipe (special handling for LoggerModule) 
@@ -122,9 +121,9 @@ package com.generatorsystems.puremvc.multicore.cores.logger.view
 					var __name:String = __note.getType();
 					
 					// STDIN is a Merging Tee. Overriding super to handle this.
-					if (__name == PipeAwareModule.STDIN) {
+					if (__name == GBPipeAwareFlexCore.STDIN) {
 						var __pipe:IPipeFitting = __note.getBody() as IPipeFitting;
-						var __tee:TeeMerge = junction.retrievePipe(PipeAwareModule.STDIN) as TeeMerge;
+						var __tee:TeeMerge = junction.retrievePipe(GBPipeAwareFlexCore.STDIN) as TeeMerge;
 						__tee.connectInput(__pipe);
 					} 
 					// Use super for any other input pipe

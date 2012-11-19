@@ -6,7 +6,7 @@
 package com.generatorsystems.projects.multicoredemo.controller
 {
     import com.generatorsystems.projects.multicoredemo.ShellFacade;
-    import com.generatorsystems.projects.multicoredemo.tools.ShellJunctionMediator;
+    import com.generatorsystems.projects.multicoredemo.view.ShellJunctionMediator;
     import com.generatorsystems.projects.multicoredemo.view.ShellMediator;
     import com.generatorsystems.projects.multicoredemo.view.LoggerModuleMediator;
     

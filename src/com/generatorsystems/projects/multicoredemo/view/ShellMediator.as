@@ -1,7 +1,7 @@
 package com.generatorsystems.projects.multicoredemo.view
 {
-	import com.generatorsystems.base.cores.tools.messages.LogFilterMessage;
-	import com.generatorsystems.base.cores.view.BaseCoreMediator;
+	import com.gb.puremvc.model.messages.LogFilterMessage;
+	import com.gb.puremvc.view.GBFlexMediator;
 	import com.generatorsystems.projects.multicoredemo.ShellFacade;
 	import com.generatorsystems.puremvc.multicore.cores.logger.view.components.LogWindow;
 	
@@ -16,7 +16,7 @@ package com.generatorsystems.projects.multicoredemo.view
 	import spark.components.Button;
 	import spark.components.TitleWindow;
 	
-	public class ShellMediator extends BaseCoreMediator implements IMediator
+	public class ShellMediator extends GBFlexMediator implements IMediator
 	{
 		public static const NAME:String = 'ApplicationMediator';
 		

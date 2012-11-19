@@ -5,7 +5,8 @@
  */
 package com.generatorsystems.puremvc.multicore.cores.logger
 {
-	import com.generatorsystems.base.cores.BaseCoreFacade;
+	import com.gb.puremvc.model.enum.GBNotifications;
+	import com.gb.puremvc.patterns.GBCoreFacade;
 	import com.generatorsystems.puremvc.multicore.cores.logger.controller.CreateLogButtonCommand;
 	import com.generatorsystems.puremvc.multicore.cores.logger.controller.CreateLogWindowCommand;
 	import com.generatorsystems.puremvc.multicore.cores.logger.controller.LogMessageCommand;
@@ -14,7 +15,7 @@ package com.generatorsystems.puremvc.multicore.cores.logger
 	/**
 	 * Application Facade for Logger Module.
 	 */ 
-	public class LoggerFacade extends BaseCoreFacade
+	public class LoggerFacade extends GBCoreFacade
 	{
         public static const STARTUP:String 				= 'startup';
         public static const LOG_MSG:String 				= 'logMessage';
@@ -53,10 +54,15 @@ package com.generatorsystems.puremvc.multicore.cores.logger
          * Application startup
          * 
          * @param app a reference to the application component 
-         */  
-        public function startup( __app:LoggerModule ):void
-        {
-            sendNotification( STARTUP, __app );
-        }
+         */ 
+		 override public function startup(core:Object, startupCommand:Class=null):void
+		 {
+			 // Default to standard GBPureMVC startup command if a custom command isn't specified.
+			 if (!startupCommand)
+				 startupCommand = StartupCommand;
+			 
+			 registerCommand(GBNotifications.STARTUP, startupCommand);
+			 sendNotification(GBNotifications.STARTUP, core);
+		 }
 	}
 }

@@ -5,8 +5,8 @@
  */
 package com.generatorsystems.projects.multicoredemo.view
 {
-	import com.generatorsystems.base.cores.tools.PipeAwareModule;
-	import com.generatorsystems.base.cores.view.BaseCoreMediator;
+	import com.gb.puremvc.GBPipeAwareFlexCore;
+	import com.gb.puremvc.view.GBFlexMediator;
 	import com.generatorsystems.projects.multicoredemo.ShellFacade;
 	import com.generatorsystems.puremvc.multicore.cores.logger.LoggerModule;
 	
@@ -26,7 +26,7 @@ package com.generatorsystems.projects.multicoredemo.view
 	 * LoggerModule, which implements IPipeAware, an interface that
 	 * requires methods for accepting input and output pipes.</P>
 	 */
-	public class LoggerModuleMediator extends BaseCoreMediator
+	public class LoggerModuleMediator extends GBFlexMediator
 	{
 		public static const NAME:String = 'LoggerModuleMediator';
 		
@@ -58,8 +58,8 @@ package com.generatorsystems.projects.multicoredemo.view
 				case  ShellFacade.CONNECT_MODULE_TO_LOGGER:
 					var __module:IPipeAware = __note.getBody() as IPipeAware;
 					var __pipe:Pipe = new Pipe();
-					__module.acceptOutputPipe(PipeAwareModule.STDLOG,__pipe);
-					logger.acceptInputPipe(PipeAwareModule.STDIN,__pipe);
+					__module.acceptOutputPipe(GBPipeAwareFlexCore.STDLOG,__pipe);
+					loggerCore.acceptInputPipe(GBPipeAwareFlexCore.STDIN,__pipe);
 					break;
 
 				// Bidirectionally connect shell and logger on STDLOG/STDSHELL
@@ -68,14 +68,14 @@ package com.generatorsystems.projects.multicoredemo.view
 					var __junction:Junction = __note.getBody() as Junction;
 					
 					// Connect the shell's STDLOG to the logger's STDIN
-					var __shellToLog:IPipeFitting = __junction.retrievePipe(PipeAwareModule.STDLOG);
-					logger.acceptInputPipe(PipeAwareModule.STDIN, __shellToLog);
+					var __shellToLog:IPipeFitting = __junction.retrievePipe(GBPipeAwareFlexCore.STDLOG);
+					loggerCore.acceptInputPipe(GBPipeAwareFlexCore.STDIN, __shellToLog);
 					
 					// Connect the logger's STDSHELL to the shell's STDIN
 					var __logToShell:Pipe = new Pipe();
-					var __shellIn:TeeMerge = __junction.retrievePipe(PipeAwareModule.STDIN) as TeeMerge;
+					var __shellIn:TeeMerge = __junction.retrievePipe(GBPipeAwareFlexCore.STDIN) as TeeMerge;
 					__shellIn.connectInput(__logToShell);
-					logger.acceptOutputPipe(PipeAwareModule.STDSHELL,__logToShell);
+					loggerCore.acceptOutputPipe(GBPipeAwareFlexCore.STDSHELL,__logToShell);
 					break;
 			}
 		}
@@ -83,7 +83,7 @@ package com.generatorsystems.projects.multicoredemo.view
 		/**
 		 * The Logger Module.
 		 */
-		private function get logger():LoggerModule
+		private function get loggerCore():LoggerModule
 		{
 			return viewComponent as LoggerModule;
 		}

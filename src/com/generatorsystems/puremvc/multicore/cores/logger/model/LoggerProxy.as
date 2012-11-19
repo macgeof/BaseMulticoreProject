@@ -5,10 +5,12 @@
  */
 package com.generatorsystems.puremvc.multicore.cores.logger.model
 {
-	import com.generatorsystems.base.cores.model.BaseCoreProxy;
-	import com.generatorsystems.base.cores.tools.messages.LogMessage;
+	
+	import com.gb.puremvc.model.messages.LogMessage;
 	
 	import mx.collections.ArrayCollection;
+	
+	import org.puremvc.as3.multicore.patterns.proxy.Proxy;
 
 	/**
 	 * The Logger Proxy.
@@ -24,7 +26,7 @@ package com.generatorsystems.puremvc.multicore.cores.logger.model
 	 * will automatically be refreshed when the
 	 * contents of the ArrayCollection changes.</P>
 	 */
-	public class LoggerProxy extends BaseCoreProxy
+	public class LoggerProxy extends Proxy
 	{
         public static const NAME:String = 'LoggerProxy';
 

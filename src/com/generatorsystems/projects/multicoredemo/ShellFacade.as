@@ -1,13 +1,13 @@
 package com.generatorsystems.projects.multicoredemo
 {
-	import com.generatorsystems.base.cores.BaseCoreFacade;
+	import com.gb.puremvc.controller.ApplicationStartupCommand;
+	import com.gb.puremvc.interfaces.IShell;
+	import com.gb.puremvc.model.enum.GBNotifications;
+	import com.gb.puremvc.patterns.GBFacade;
 	import com.generatorsystems.projects.multicoredemo.controller.StartupCommand;
+	import com.generatorsystems.projects.multicoredemo.view.ShellMediator;
 	
-	import org.puremvc.as3.multicore.interfaces.IFacade;
-	
-	import spark.components.Application;
-	
-	public class ShellFacade extends BaseCoreFacade implements IFacade
+	public class ShellFacade extends GBFacade implements IShell
 	{
 		public static const NAME:String = "ApplicationFacade";
 		
@@ -46,14 +46,25 @@ package com.generatorsystems.projects.multicoredemo
 			registerCommand( STARTUP, StartupCommand );
 		}
 		
-		/**
-		 * Application startup
-		 * 
-		 * @param app a reference to the application component 
-		 */  
-		public function startup( __app:Application ):void
+		public function get applicationMediator():Class
 		{
-			sendNotification( STARTUP, __app );
+			return ShellMediator;
+		}
+		
+		/**
+		 * Starts up application.
+		 * 
+		 * @param	Object		reference to document class
+		 * @param 	Class		custom startup command. Optional, defaults to core framework command
+		 */
+		override public function startup(application:Object, startupCommand:Class = null):void
+		{
+			// Default to standard GBPureMVC startup command if a custom command isn't specified.
+			if (!startupCommand)
+				startupCommand = ApplicationStartupCommand;
+			
+			registerCommand(GBNotifications.STARTUP, startupCommand);
+			sendNotification(GBNotifications.STARTUP, application);
 		}
 	}
 }

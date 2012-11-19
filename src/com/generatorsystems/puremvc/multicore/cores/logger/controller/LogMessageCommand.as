@@ -5,7 +5,7 @@
  */
 package com.generatorsystems.puremvc.multicore.cores.logger.controller
 {
-    import com.generatorsystems.base.cores.tools.messages.LogMessage;
+    import com.gb.puremvc.model.messages.LogMessage;
     import com.generatorsystems.puremvc.multicore.cores.logger.model.LoggerProxy;
     
     import org.puremvc.as3.multicore.interfaces.ICommand;
