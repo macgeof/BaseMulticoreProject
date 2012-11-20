@@ -64,6 +64,7 @@ package com.generatorsystems.projects.multicoredemo.view
 					var __logger:LoggerModule = new LoggerModule();
 					__logger.startup();
 					viewComponent = __logger;
+					sendNotification(ShellFacade.LOGGER_AVAILABLE_TO_CONNECT);
 					break;
 				
 				// Connect any Module's STDLOG to the logger's STDIN

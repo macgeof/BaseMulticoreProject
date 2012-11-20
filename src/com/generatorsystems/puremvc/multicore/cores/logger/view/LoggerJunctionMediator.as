@@ -109,8 +109,8 @@ package com.generatorsystems.puremvc.multicore.cores.logger.view
 			{
 				//core startup complete
 				case GBNotifications.STARTUP_COMPLETE :
-					var __message:Message = new Message(GBNotifications.STARTUP_COMPLETE, loggerCore);
-					__logged = junction.sendMessage(GBPipeAwareFlexCore.STDSHELL, __message);
+					/*var __message:Message = new Message(GBNotifications.STARTUP_COMPLETE, loggerCore);
+					__logged = junction.sendMessage(GBPipeAwareFlexCore.STDSHELL, __message);*/
 					break;					
 				
 				// Send the LogButton UI Component 

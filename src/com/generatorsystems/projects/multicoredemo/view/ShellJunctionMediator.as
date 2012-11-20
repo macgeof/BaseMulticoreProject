@@ -49,7 +49,6 @@ package com.generatorsystems.projects.multicoredemo.view
 			
 			// The STDLOG pipe from the shell to the logger
 			junction.registerPipe( GBPipeAwareFlexCore.STDLOG, Junction.OUTPUT, new Pipe() );
-			sendNotification(ShellFacade.CONNECT_SHELL_TO_LOGGER, junction );
 
 		}
 		
@@ -61,6 +60,7 @@ package com.generatorsystems.projects.multicoredemo.view
 		override public function listNotificationInterests():Array
 		{
 			var interests:Array = super.listNotificationInterests();
+			interests.push( ShellFacade.LOGGER_AVAILABLE_TO_CONNECT);
 			interests.push( ShellFacade.REQUEST_LOG_WINDOW );
 			interests.push( ShellFacade.REQUEST_LOG_BUTTON );
 			interests.push( ShellFacade.CONNECT_MODULE_TO_SHELL );
@@ -75,6 +75,10 @@ package com.generatorsystems.projects.multicoredemo.view
 			
 			switch( __note.getName() )
 			{
+				case ShellFacade.LOGGER_AVAILABLE_TO_CONNECT :
+					sendNotification(ShellFacade.CONNECT_SHELL_TO_LOGGER, junction );
+					sendNotification(ShellFacade.REQUEST_LOG_BUTTON);
+					break;
 							
 				case ShellFacade.REQUEST_LOG_BUTTON:
 					sendNotification(LogMessage.SEND_TO_LOG,"Requesting log button from LoggerModule.",LogMessage.LEVELS[LogMessage.DEBUG]);

@@ -35,6 +35,16 @@ package com.generatorsystems.puremvc.multicore.cores.logger.model
         {
             super( NAME, new ArrayCollection() );
         }
+		
+		override public function onRegister():void
+		{
+			super.onRegister();
+		}
+		
+		override public function onRemove():void
+		{
+			super.onRemove();
+		}
         
         public function addLogEntry(__message:LogMessage):void
         {
