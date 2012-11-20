@@ -5,6 +5,9 @@
  */
 package com.generatorsystems.puremvc.multicore.cores.logger.controller
 {
+    import com.gb.puremvc.controller.CoreStartupCommand;
+    import com.gb.puremvc.model.enum.GBNotifications;
+    import com.generatorsystems.puremvc.multicore.cores.logger.LoggerModule;
     import com.generatorsystems.puremvc.multicore.cores.logger.model.LoggerProxy;
     import com.generatorsystems.puremvc.multicore.cores.logger.view.LoggerJunctionMediator;
     
@@ -19,10 +22,11 @@ package com.generatorsystems.puremvc.multicore.cores.logger.controller
 	 * LoggerJunctionMediator which will mediate communications
 	 * over the pipes of the LoggerJunction.</P>
 	 */
-    public class StartupCommand extends SimpleCommand implements ICommand
+    public class StartupCommand extends CoreStartupCommand implements ICommand
     {
         override public function execute(note:INotification):void
         {
+			super.execute(note);
         	// NOTE: There is no need to register an 
         	// ApplicationMediator with the reference to the 
         	// module that was passed in. This module extends 
@@ -30,8 +34,10 @@ package com.generatorsystems.puremvc.multicore.cores.logger.controller
         	// to send Notifications to accept input pipes and 
         	// output pipes and therefore does not need a Mediator.
         	
-       		facade.registerProxy( new LoggerProxy( ) );
-       		facade.registerMediator( new LoggerJunctionMediator( ) );
+       		/*facade.registerProxy( new LoggerProxy( ) );*/
+       		facade.registerMediator( new LoggerJunctionMediator( note.getBody() as LoggerModule ) );
+			
+			sendNotification(GBNotifications.STARTUP_COMPLETE);
         }
         
     }

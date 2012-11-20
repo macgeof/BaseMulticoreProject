@@ -1,5 +1,6 @@
 package com.generatorsystems.projects.multicoredemo.view
 {
+	import com.gb.puremvc.model.enum.GBNotifications;
 	import com.gb.puremvc.model.messages.LogFilterMessage;
 	import com.gb.puremvc.view.GBFlexMediator;
 	import com.generatorsystems.projects.multicoredemo.ShellFacade;
@@ -45,10 +46,15 @@ package com.generatorsystems.projects.multicoredemo.view
 		 */
 		override public function listNotificationInterests():Array
 		{
-			return [ ShellFacade.SHOW_LOG_WINDOW,
-				ShellFacade.SHOW_LOG_BUTTON,
-				ShellFacade.SHOW_FEED_WINDOW
-			];	
+			var __interests:Array = super.listNotificationInterests();
+			__interests.push(
+					GBNotifications.STARTUP_COMPLETE,
+					ShellFacade.SHOW_LOG_WINDOW,
+					ShellFacade.SHOW_LOG_BUTTON,
+					ShellFacade.SHOW_FEED_WINDOW
+			);
+				
+				return __interests;
 		}
 		
 		/**
@@ -61,6 +67,10 @@ package com.generatorsystems.projects.multicoredemo.view
 		{
 			switch( __note.getName() )
 			{
+				case GBNotifications.STARTUP_COMPLETE :
+					 
+					break;
+				
 				case  ShellFacade.SHOW_LOG_BUTTON:
 					var logButton:Button = __note.getBody() as Button;
 					logButton.addEventListener(MouseEvent.CLICK, onLogButtonClick);
@@ -77,6 +87,8 @@ package com.generatorsystems.projects.multicoredemo.view
 					break;
 				
 			}
+			
+			super.handleNotification(__note);
 		}
 		
 		/**

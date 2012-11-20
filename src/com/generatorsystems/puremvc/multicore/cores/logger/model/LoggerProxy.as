@@ -6,6 +6,7 @@
 package com.generatorsystems.puremvc.multicore.cores.logger.model
 {
 	
+	import com.gb.puremvc.model.AbstractProxy;
 	import com.gb.puremvc.model.messages.LogMessage;
 	
 	import mx.collections.ArrayCollection;
@@ -26,11 +27,11 @@ package com.generatorsystems.puremvc.multicore.cores.logger.model
 	 * will automatically be refreshed when the
 	 * contents of the ArrayCollection changes.</P>
 	 */
-	public class LoggerProxy extends Proxy
+	public class LoggerProxy extends AbstractProxy
 	{
         public static const NAME:String = 'LoggerProxy';
 
-		public function LoggerProxy()
+		public function LoggerProxy(__name:String, __data:* = null)
         {
             super( NAME, new ArrayCollection() );
         }

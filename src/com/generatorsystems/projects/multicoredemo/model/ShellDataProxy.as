@@ -1,10 +1,10 @@
 package com.generatorsystems.projects.multicoredemo.model
 {
-	import com.generatorsystems.base.cores.model.BaseCoreProxy;
+	import com.gb.puremvc.model.AbstractProxy;
 	
 	import org.puremvc.as3.multicore.interfaces.IProxy;
 	
-	public class ShellDataProxy extends BaseCoreProxy implements IProxy
+	public class ShellDataProxy extends AbstractProxy implements IProxy
 	{
 		public static const NAME:String = 'ShellDataProxy';
 		

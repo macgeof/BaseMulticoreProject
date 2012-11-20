@@ -2,7 +2,8 @@
 <s:Application xmlns:fx="http://ns.adobe.com/mxml/2009"
 			   xmlns:s="library://ns.adobe.com/flex/spark"
 			   applicationDPI="160"
-			   creationComplete="_facade.startup(this, StartupCommand)">
+			   implements="com.gb.puremvc.interfaces.IShell"
+			   creationComplete="_startupApplication()">
 	<s:layout>
 		<s:VerticalLayout/>
 	</s:layout>
@@ -17,6 +18,8 @@
 			import com.gb.puremvc.model.messages.LogMessage;
 			import com.generatorsystems.projects.multicoredemo.ShellFacade;
 			import com.generatorsystems.projects.multicoredemo.controller.StartupCommand;
+			import com.generatorsystems.projects.multicoredemo.model.enums.Cores;
+			import com.generatorsystems.projects.multicoredemo.view.ShellMediator;
 			
 			import mx.effects.easing.*;
 			import mx.events.EffectEvent;
@@ -25,12 +28,23 @@
 			import spark.components.TitleWindow;
 			import spark.core.SpriteVisualElement;
 		
-			private var _facade:ShellFacade = ShellFacade.getInstance(NAME);
+			private var _facade:ShellFacade;
 			
 			public static const LOG_LEVEL:String  	= "logLevel";
 			public static const NAME:String 		= 'BaseMulticoreProject';
 			
-			[Bindable] public var logLevel:Number; 
+			[Bindable] public var logLevel:Number;
+			
+			private function _startupApplication():void
+			{
+				_facade = ShellFacade.getInstance(Cores.SHELL);
+				_facade.startup(this, StartupCommand);
+			}
+			
+			public function get applicationMediator():Class
+			{
+				return ShellMediator;
+			}
 	
 			private var _logButton:Button;
 			

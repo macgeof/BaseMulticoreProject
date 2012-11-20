@@ -6,6 +6,7 @@
 package com.generatorsystems.puremvc.multicore.cores.logger.view
 {
 	import com.gb.puremvc.GBPipeAwareFlexCore;
+	import com.gb.puremvc.model.enum.GBNotifications;
 	import com.gb.puremvc.model.messages.LogFilterMessage;
 	import com.gb.puremvc.model.messages.LogMessage;
 	import com.gb.puremvc.model.messages.UIQueryMessage;
@@ -17,6 +18,7 @@ package com.generatorsystems.puremvc.multicore.cores.logger.view
 	import org.puremvc.as3.multicore.interfaces.INotification;
 	import org.puremvc.as3.multicore.utilities.pipes.interfaces.IPipeFitting;
 	import org.puremvc.as3.multicore.utilities.pipes.interfaces.IPipeMessage;
+	import org.puremvc.as3.multicore.utilities.pipes.messages.Message;
 	import org.puremvc.as3.multicore.utilities.pipes.plumbing.Filter;
 	import org.puremvc.as3.multicore.utilities.pipes.plumbing.Junction;
 	import org.puremvc.as3.multicore.utilities.pipes.plumbing.JunctionMediator;
@@ -26,6 +28,8 @@ package com.generatorsystems.puremvc.multicore.cores.logger.view
 	public class LoggerJunctionMediator extends JunctionMediator
 	{
 		public static const NAME:String = 'LoggerJunctionMediator';
+		
+		private var _loggerModule:LoggerModule;
 
 		/**
 		 * Constructor.
@@ -37,9 +41,11 @@ package com.generatorsystems.puremvc.multicore.cores.logger.view
 		 * as separate pipes registered with the
 		 * Junction.</P>
 		 */ 		
-		public function LoggerJunctionMediator( )
+		public function LoggerJunctionMediator( core:LoggerModule )
 		{
 			super( NAME, new Junction() );
+			
+			_loggerModule = core;
 			
 		}
 
@@ -75,6 +81,7 @@ package com.generatorsystems.puremvc.multicore.cores.logger.view
 		override public function listNotificationInterests():Array
 		{
 			var __interests:Array = super.listNotificationInterests();
+			__interests.push(GBNotifications.STARTUP_COMPLETE);
 			__interests.push(LoggerFacade.EXPORT_LOG_BUTTON);
 			__interests.push(LoggerFacade.EXPORT_LOG_WINDOW);
 			return __interests;
@@ -100,6 +107,12 @@ package com.generatorsystems.puremvc.multicore.cores.logger.view
 			
 			switch( __note.getName() )
 			{
+				//core startup complete
+				case GBNotifications.STARTUP_COMPLETE :
+					var __message:Message = new Message(GBNotifications.STARTUP_COMPLETE, loggerCore);
+					__logged = junction.sendMessage(GBPipeAwareFlexCore.STDSHELL, __message);
+					break;					
+				
 				// Send the LogButton UI Component 
 				case LoggerFacade.EXPORT_LOG_BUTTON:
 					var __logButtonMessage:UIQueryMessage = new UIQueryMessage( UIQueryMessage.SET, LoggerModule.LOG_BUTTON_UI, UIComponent(__note.getBody()) );
@@ -161,6 +174,11 @@ package com.generatorsystems.puremvc.multicore.cores.logger.view
 						break;
 				}
 			}
+		}
+		
+		protected function get loggerCore():LoggerModule
+		{
+			return _loggerModule as LoggerModule;
 		}
 	}
 }

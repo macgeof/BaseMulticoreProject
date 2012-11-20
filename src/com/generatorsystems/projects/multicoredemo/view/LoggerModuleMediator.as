@@ -6,6 +6,7 @@
 package com.generatorsystems.projects.multicoredemo.view
 {
 	import com.gb.puremvc.GBPipeAwareFlexCore;
+	import com.gb.puremvc.model.enum.GBNotifications;
 	import com.gb.puremvc.view.GBFlexMediator;
 	import com.generatorsystems.projects.multicoredemo.ShellFacade;
 	import com.generatorsystems.puremvc.multicore.cores.logger.LoggerModule;
@@ -32,7 +33,7 @@ package com.generatorsystems.projects.multicoredemo.view
 		
 		public function LoggerModuleMediator( )
 		{
-			super( NAME, new LoggerModule() );
+//			super( NAME, new LoggerModule() );
 		}
 
 		/**
@@ -40,9 +41,14 @@ package com.generatorsystems.projects.multicoredemo.view
 		 */
 		override public function listNotificationInterests():Array
 		{
-			return [ ShellFacade.CONNECT_MODULE_TO_LOGGER,
-					 ShellFacade.CONNECT_SHELL_TO_LOGGER 
-			       ];	
+			var __interests:Array = super.listNotificationInterests();
+			__interests.push(
+				GBNotifications.STARTUP_COMPLETE,
+				ShellFacade.CONNECT_MODULE_TO_LOGGER,
+				ShellFacade.CONNECT_SHELL_TO_LOGGER 
+			);
+			
+			return __interests;
 		}
 		
 		/**
@@ -54,6 +60,12 @@ package com.generatorsystems.projects.multicoredemo.view
 		{
 			switch( __note.getName() )
 			{
+				case GBNotifications.STARTUP_COMPLETE :
+					var __logger:LoggerModule = new LoggerModule();
+					__logger.startup();
+					viewComponent = __logger;
+					break;
+				
 				// Connect any Module's STDLOG to the logger's STDIN
 				case  ShellFacade.CONNECT_MODULE_TO_LOGGER:
 					var __module:IPipeAware = __note.getBody() as IPipeAware;

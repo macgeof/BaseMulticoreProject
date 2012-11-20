@@ -5,11 +5,14 @@
  */
 package com.generatorsystems.puremvc.multicore.cores.logger
 {
+	import com.gb.puremvc.GBPipeAwareCore;
+	import com.generatorsystems.projects.multicoredemo.model.enums.Cores;
 	import com.generatorsystems.puremvc.multicore.cores.logger.LoggerFacade;
+	import com.generatorsystems.puremvc.multicore.cores.logger.controller.StartupCommand;
+	import com.generatorsystems.puremvc.multicore.cores.logger.model.LoggerProxy;
+	import com.generatorsystems.puremvc.multicore.cores.logger.view.LoggerMediator;
 
-	import com.gb.puremvc.GBPipeAwareFlexCore;
-
-	public class LoggerModule extends GBPipeAwareFlexCore
+	public class LoggerModule extends GBPipeAwareCore
 	{
 		public static const NAME:String 			= 'LoggerModule';
 		public static const LOG_BUTTON_UI:String 	= 'LogButtonUI';
@@ -17,8 +20,24 @@ package com.generatorsystems.puremvc.multicore.cores.logger
 		
 		public function LoggerModule()
 		{
-			super(LoggerFacade.getInstance( NAME ));
-			LoggerFacade(facade).startup( this );
+			facade = LoggerFacade.getInstance(Cores.LOGGER);
+			super(facade);
+		}
+		
+		
+		override public function get coreMediator():Class
+		{
+			return LoggerMediator;
+		}
+		
+		override public function get coreProxy():Class
+		{
+			return LoggerProxy;
+		}
+		
+		override public function startup():void
+		{			
+			LoggerFacade(facade).startup(this, StartupCommand);
 		}
 1
 	}

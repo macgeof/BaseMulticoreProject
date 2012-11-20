@@ -15,14 +15,14 @@
 
 	<!-- A universally unique application identifier. Must be unique across all AIR applications.
 	Using a reverse DNS-style name as the id is recommended. (Eg. com.example.ExampleApplication.) Required. -->
-	<id>BaseMulticoreProject</id>
+	<id>BaseMulticorePureMVC</id>
 
 	<!-- Used as the filename for the application. Required. -->
-	<filename>BaseMulticoreProject</filename>
+	<filename>BaseMulticorePureMVC</filename>
 
 	<!-- The name that is displayed in the AIR application installer. 
 	May have multiple values for each language. See samples or xsd schema file. Optional. -->
-	<name>BaseMulticoreProject</name>
+	<name>BaseMulticorePureMVC</name>
 	
 	<!-- A string value of the format <0-999>.<0-999>.<0-999> that represents application version which can be used to check for application upgrade. 
 	Values can also be 1-part or 2-part. It is not necessary to have a 3-part value.
@@ -46,7 +46,7 @@
 	<initialWindow>
 		<!-- The main SWF or HTML file of the application. Required. -->
 		<!-- Note: In Flash Builder, the SWF reference is set automatically. -->
-		<content>BaseMulticoreProject.swf</content>
+		<content>[This value will be overwritten by Flash Builder in the output app.xml]</content>
 		
 		<!-- The title of the main window. Optional. -->
 		<!-- <title></title> -->
@@ -105,10 +105,9 @@
 
 		<!-- Whether or not to pan when a soft keyboard is raised or lowered (either "pan" or "none").  Optional.  Defaults "pan." -->
 		<!-- <softKeyboardBehavior></softKeyboardBehavior> -->
-	<autoOrients>true</autoOrients>
+	<autoOrients>false</autoOrients>
         <fullScreen>false</fullScreen>
-        <visible>true</visible>
-        <softKeyboardBehavior>none</softKeyboardBehavior>
+        <visible>false</visible>
     </initialWindow>
 
 	<!-- We recommend omitting the supportedProfiles element, -->
@@ -230,39 +229,4 @@
     <!-- </android> -->
 	<!-- End of the schema for adding the android specific tags in AndroidManifest.xml file -->
 
-<android>
-        <colorDepth>16bit</colorDepth>
-        <manifestAdditions><![CDATA[
-			<manifest android:installLocation="auto">
-			    <!--See the Adobe AIR documentation for more information about setting Google Android permissions-->
-			    <!--Removing the permission android.permission.INTERNET will have the side effect
-		of preventing you from debugging your application on your device-->
-			    <uses-permission android:name="android.permission.INTERNET"/>
-			    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-			    <!--<uses-permission android:name="android.permission.READ_PHONE_STATE"/>-->
-			    <!--<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>-->
-			    <!--The DISABLE_KEYGUARD and WAKE_LOCK permissions should be toggled together
-		in order to access AIR's SystemIdleMode APIs-->
-			    <!--<uses-permission android:name="android.permission.DISABLE_KEYGUARD"/>-->
-			    <!--<uses-permission android:name="android.permission.WAKE_LOCK"/>-->
-			    <!--<uses-permission android:name="android.permission.CAMERA"/>-->
-			    <!--<uses-permission android:name="android.permission.RECORD_AUDIO"/>-->
-			    <!--The ACCESS_NETWORK_STATE and ACCESS_WIFI_STATE permissions should be toggled
-		together in order to use AIR's NetworkInfo APIs-->
-			    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-			    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
-			</manifest>
-			
-		]]></manifestAdditions>
-    </android>
-    <iPhone>
-        <InfoAdditions><![CDATA[
-			<key>UIDeviceFamily</key>
-			<array>
-				<string>1</string>
-				<string>2</string>
-			</array>
-		]]></InfoAdditions>
-        <requestedDisplayResolution>high</requestedDisplayResolution>
-    </iPhone>
 </application>

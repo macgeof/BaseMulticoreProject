@@ -5,14 +5,19 @@
  */
 package com.generatorsystems.projects.multicoredemo.controller
 {
+    import com.gb.puremvc.controller.AbstractStartupCommand;
+    import com.gb.puremvc.controller.ApplicationStartupCommand;
+    import com.gb.puremvc.model.enum.GBNotifications;
     import com.generatorsystems.projects.multicoredemo.ShellFacade;
+    import com.generatorsystems.projects.multicoredemo.model.ShellDataProxy;
+    import com.generatorsystems.projects.multicoredemo.view.LoggerModuleMediator;
     import com.generatorsystems.projects.multicoredemo.view.ShellJunctionMediator;
     import com.generatorsystems.projects.multicoredemo.view.ShellMediator;
-    import com.generatorsystems.projects.multicoredemo.view.LoggerModuleMediator;
     
     import org.puremvc.as3.multicore.interfaces.ICommand;
     import org.puremvc.as3.multicore.interfaces.INotification;
     import org.puremvc.as3.multicore.patterns.command.SimpleCommand;
+    import org.puremvc.as3.multicore.utilities.pipes.plumbing.Junction;
 
 	/**
 	 * Startup the Main Application/Shell.
@@ -36,19 +41,29 @@ package com.generatorsystems.projects.multicoredemo.controller
     public class StartupCommand extends SimpleCommand implements ICommand
     {
         override public function execute(note:INotification):void
-        {
-			// Create and Register the Logger Module and its Mediator
-       		facade.registerMediator(new LoggerModuleMediator());
+        {			
+			super.execute(note);
+			
+			
+			// Create and Register the Application and its Mediator
+			var __app:BaseMulticoreProject = note.getBody() as BaseMulticoreProject;
+			var __mediator:Class = __app.applicationMediator;
+			facade.registerMediator(new __mediator(__mediator.NAME, __app));
+			
+			facade.registerProxy(new ShellDataProxy(ShellDataProxy.NAME));
        		
        		// Create and Register the Shell Junction and its Mediator
 			facade.registerMediator(new ShellJunctionMediator());
+			
+			// Create and Register the Logger Module and its Mediator
+			facade.registerMediator(new LoggerModuleMediator());
 
-			// Create and Register the Application and its Mediator
-        	var app:BaseMulticoreProject = note.getBody() as BaseMulticoreProject;
-       		facade.registerMediator(new ShellMediator(ShellMediator.NAME, app));
+			sendNotification(GBNotifications.STARTUP_COMPLETE);
+			
+/*			
 			
 			// Request the Log Button UI from the Logger Module       		
-			sendNotification(ShellFacade.REQUEST_LOG_BUTTON);
+			sendNotification(ShellFacade.REQUEST_LOG_BUTTON);*/
         }
         
     }
