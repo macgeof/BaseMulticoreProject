@@ -48,10 +48,10 @@ package com.generatorsystems.projects.multicoredemo.controller
 			facade.registerProxy(new ShellDataProxy(ShellDataProxy.NAME));
        		
        		// Create and Register the Shell Junction and its Mediator
-			facade.registerMediator(new ShellJunctionMediator());
+			facade.registerMediator(new ShellJunctionMediator(ShellJunctionMediator.NAME));
 			
 			// Create and Register the Logger Module and its Mediator
-			facade.registerMediator(new LoggerModuleMediator());
+			facade.registerMediator(new LoggerModuleMediator(LoggerModuleMediator.NAME));
 
 			sendNotification(ShellFacade.CREATE_LOGGER);
         }

@@ -21,6 +21,8 @@ package com.generatorsystems.projects.multicoredemo.view
 	{
 		public static const NAME:String = 'ApplicationMediator';
 		
+		private var _logWindowDisplayed:Boolean = false;
+		
 		public function ShellMediator(__mediatorName:String, __viewComponent:BaseMulticoreProject)
 		{			
 			super(__mediatorName, __viewComponent);
@@ -50,6 +52,7 @@ package com.generatorsystems.projects.multicoredemo.view
 		{
 			var __interests:Array = super.listNotificationInterests();
 			__interests.push(
+					GBNotifications.DESTROY,
 					GBNotifications.STARTUP_COMPLETE,
 					ShellFacade.SHOW_LOG_WINDOW,
 					ShellFacade.SHOW_LOG_BUTTON,
@@ -69,6 +72,16 @@ package com.generatorsystems.projects.multicoredemo.view
 		{
 			switch( __note.getName() )
 			{
+				case GBNotifications.DESTROY :
+					var __targetToDestroy:String = __note.getBody().toString();
+					if (app.logButton && app.logButton.hasEventListener(MouseEvent.CLICK))
+					{
+						app.logButton.removeEventListener(MouseEvent.CLICK, onLogButtonClick);
+						app.removeLogGUI();
+					}
+					_logWindowDisplayed = false;
+					break;
+				
 				case GBNotifications.STARTUP_COMPLETE :
 					 
 					break;
@@ -80,11 +93,11 @@ package com.generatorsystems.projects.multicoredemo.view
 					break;
 				
 				case  ShellFacade.SHOW_LOG_WINDOW:
-					if (_logWindow == null) {
-						_logWindow = UIComponent(__note.getBody()) as LogWindow;
-						_logWindow.addEventListener(Event.CLOSE, onLogWindowClose);
+					if (app.logWindow == null) {
+						app.logWindow = UIComponent(__note.getBody()) as LogWindow;
+						app.logWindow.addEventListener(Event.CLOSE, onLogWindowClose);
 					}
-					app.addLogWindow(_logWindow);
+					app.addLogWindow();
 					_logWindowDisplayed=true;
 					break;
 				
@@ -113,8 +126,8 @@ package com.generatorsystems.projects.multicoredemo.view
 		private function onLogButtonClick(__event:Event):void
 		{
 			if (_logWindowDisplayed) return onLogWindowClose(__event);
-			if (_logWindow != null) {
-				sendNotification(ShellFacade.SHOW_LOG_WINDOW, _logWindow)
+			if (app.logWindow != null) {
+				sendNotification(ShellFacade.SHOW_LOG_WINDOW, app.logWindow)
 			} else {
 				sendNotification(ShellFacade.REQUEST_LOG_WINDOW);
 			}
@@ -128,18 +141,13 @@ package com.generatorsystems.projects.multicoredemo.view
 		 */
 		private function onLogWindowClose(__event:Event):void
 		{
-			app.removeLogWindow(_logWindow); 	
+			app.removeLogWindow(); 	
 			_logWindowDisplayed=false;
 		}
 		
 		private function _killCreateLogger_Handler(__event:MouseEvent):void
 		{
 			var __noteName:String = (app.logButton == null) ? ShellFacade.CREATE_LOGGER : ShellFacade.KILL_LOGGER;
-			if (__noteName == ShellFacade.KILL_LOGGER)
-			{
-				if (app.logButton && app.logButton.hasEventListener(MouseEvent.CLICK)) app.logButton.removeEventListener(MouseEvent.CLICK, onLogButtonClick);
-				app.removeLogGUI();
-			}
 			sendNotification(__noteName);
 		}
 		
@@ -151,7 +159,5 @@ package com.generatorsystems.projects.multicoredemo.view
 			return viewComponent as BaseMulticoreProject;
 		}
 		
-		private var _logWindowDisplayed:Boolean = false;
-		private var _logWindow:TitleWindow;
 	}
 }

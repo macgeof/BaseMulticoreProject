@@ -46,7 +46,6 @@ package com.generatorsystems.puremvc.multicore.cores.logger
 		{
 			facade.destroy();
 			
-			Facade.removeCore(Cores.LOGGER);
 		}
 1
 	}

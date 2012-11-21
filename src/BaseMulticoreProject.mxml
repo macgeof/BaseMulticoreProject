@@ -24,6 +24,8 @@
 			import mx.effects.easing.*;
 			import mx.events.EffectEvent;
 			
+			import org.puremvc.as3.multicore.patterns.facade.Facade;
+			
 			import spark.components.Button;
 			import spark.components.TitleWindow;
 			import spark.core.SpriteVisualElement;
@@ -32,17 +34,28 @@
 			
 			public static const LOG_LEVEL:String  	= "logLevel";
 			public static const NAME:String 		= 'BaseMulticoreProject';
+			protected static const KILL_LOGGER:String = "Kill Logger";
+			protected static const CREATE_LOGGER:String = "Create Logger";
 			
 			[Bindable] public var logLevel:Number;
+			[Bindable] protected var killCreateButtonLabel:String = KILL_LOGGER;
 			
+			private var _logButton:Button;
+			private var _logWindow:TitleWindow;
+			
+			public function set logWindow(value:TitleWindow):void
+			{
+				_logWindow = value;
+			}
+
+			public function get logWindow():TitleWindow
+			{
+				return _logWindow;
+			}
+
 			public function get logButton():Button
 			{
 				return _logButton;
-			}
-
-			public function get killCreateButtonLabel():String
-			{
-				return (logButton == null) ? "Create Logger" : "Kill Logger";
 			}
 			
 			private function _startupApplication():void
@@ -55,9 +68,6 @@
 			{
 				return ShellMediator;
 			}
-	
-			private var _logButton:Button;
-			private var _logWindow:TitleWindow;
 			
 			/**
 			* Adds the module-manufactured LogButton to the 
@@ -73,26 +83,26 @@
 			* Adds the module-manufactured LogWindows to the 
 			* view for display.
 			*/
-			public function addLogWindow(__logWindow:TitleWindow):void
+			public function addLogWindow():void
 			{
 				var __maskDispObj:SpriteVisualElement = new SpriteVisualElement();
 				__maskDispObj.graphics.beginFill(0xFF0000, 1);
 				__maskDispObj.graphics.drawRect(0,0,logBox.width,logBox.height);
 				__maskDispObj.graphics.endFill();
 				logBox.addElement(__maskDispObj);
-				logBox.addElementAt(__logWindow,0);
-				__logWindow.mask = __maskDispObj;
-				_logWindow = __logWindow;
+				logBox.addElementAt(_logWindow,0);
+				_logWindow.mask = __maskDispObj;
+				_logWindow = _logWindow;
 			}
 			
 			/**
 			* Remove the module-manufactured LogWindow from the 
 			* view.
 			*/
-			public function removeLogWindow(__logWindow:TitleWindow):void
+			public function removeLogWindow():void
 			{
-				__logWindow.addEventListener(EffectEvent.EFFECT_END, _logWindowRemovedEffectHandler);
-				logBox.removeElement(__logWindow);
+				_logWindow.addEventListener(EffectEvent.EFFECT_END, _logWindowRemovedEffectHandler);
+				logBox.removeElement(_logWindow);
 			}
 			
 			protected function _logWindowRemovedEffectHandler(__event:EffectEvent):void
@@ -131,6 +141,12 @@
 				}
 			}
 			
+			protected function killCreateLogger_clickHandler(event:MouseEvent):void
+			{
+				//logic for label changing may seem wrong way round, but label is updated before the core is created/destroyed ;)
+				killCreateButtonLabel = (Facade.hasCore(Cores.LOGGER)) ? CREATE_LOGGER : KILL_LOGGER;
+			}
+			
 		]]>
 	</fx:Script>
 	<fx:Declarations>
@@ -139,7 +155,7 @@
 		<s:HGroup id="toolbar" width="1280" height="90" fontFamily="Georgia" gap="20"
 				  paddingBottom="30" paddingLeft="40" paddingRight="40" paddingTop="30"
 				  verticalAlign="bottom">
-			<s:Button id="killCreateLogger" label="{killCreateButtonLabel}" />
+			<s:Button id="killCreateLogger" label="{killCreateButtonLabel}" click="killCreateLogger_clickHandler(event)" />
 		</s:HGroup>
 		
 		<s:HGroup width="1280" height="40" gap="20" paddingBottom="10" paddingLeft="30"

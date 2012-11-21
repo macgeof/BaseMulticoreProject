@@ -1,5 +1,6 @@
 package com.generatorsystems.puremvc.multicore.cores.logger.view
 {
+	import com.gb.puremvc.model.enum.GBNotifications;
 	import com.gb.puremvc.view.AbstractMediator;
 	import com.generatorsystems.puremvc.multicore.cores.logger.LoggerModule;
 	
@@ -28,6 +29,7 @@ package com.generatorsystems.puremvc.multicore.cores.logger.view
 		override public function listNotificationInterests():Array
 		{
 			var __interests:Array = super.listNotificationInterests();
+			__interests.push(GBNotifications.DESTROY);
 			
 			return __interests;
 		}
@@ -36,6 +38,10 @@ package com.generatorsystems.puremvc.multicore.cores.logger.view
 		{
 			switch (notification.getName())
 			{
+				case GBNotifications.DESTROY :
+					viewComponent = null;
+					break;
+					
 				default :
 					super.handleNotification(notification);
 					break;

@@ -9,9 +9,11 @@ package com.generatorsystems.projects.multicoredemo.view
 	import com.gb.puremvc.model.enum.GBNotifications;
 	import com.gb.puremvc.view.GBFlexMediator;
 	import com.generatorsystems.projects.multicoredemo.ShellFacade;
+	import com.generatorsystems.projects.multicoredemo.model.enums.Cores;
 	import com.generatorsystems.puremvc.multicore.cores.logger.LoggerModule;
 	
 	import org.puremvc.as3.multicore.interfaces.INotification;
+	import org.puremvc.as3.multicore.patterns.facade.Facade;
 	import org.puremvc.as3.multicore.utilities.pipes.interfaces.IPipeAware;
 	import org.puremvc.as3.multicore.utilities.pipes.interfaces.IPipeFitting;
 	import org.puremvc.as3.multicore.utilities.pipes.plumbing.Junction;
@@ -31,9 +33,9 @@ package com.generatorsystems.projects.multicoredemo.view
 	{
 		public static const NAME:String = 'LoggerModuleMediator';
 		
-		public function LoggerModuleMediator( )
+		public function LoggerModuleMediator(__name:String = NAME )
 		{
-//			super( NAME, new LoggerModule() );
+			super(__name);
 		}
 
 		/**
@@ -43,7 +45,7 @@ package com.generatorsystems.projects.multicoredemo.view
 		{
 			var __interests:Array = super.listNotificationInterests();
 			__interests.push(
-				ShellFacade.KILL_LOGGER,
+				GBNotifications.DESTROY,
 				ShellFacade.CREATE_LOGGER,
 				ShellFacade.CONNECT_MODULE_TO_LOGGER,
 				ShellFacade.CONNECT_SHELL_TO_LOGGER 
@@ -61,8 +63,16 @@ package com.generatorsystems.projects.multicoredemo.view
 		{
 			switch( __note.getName() )
 			{
-				case ShellFacade.KILL_LOGGER :
-//					viewComponent = null;
+				case GBNotifications.DESTROY :
+					var __targetToDestroy:String = __note.getBody().toString();
+					if (__targetToDestroy == Cores.LOGGER)
+					{
+						trace("PRE remove of logger : hasCore = " + Facade.hasCore(Cores.LOGGER));
+						Facade.removeCore(Cores.LOGGER);
+						trace("POST remove of logger : hasCore = " + Facade.hasCore(Cores.LOGGER));
+						viewComponent = null;
+						trace("POST null of logger : hasCore = " + Facade.hasCore(Cores.LOGGER));
+					}
 					break;
 				
 				case ShellFacade.CREATE_LOGGER :

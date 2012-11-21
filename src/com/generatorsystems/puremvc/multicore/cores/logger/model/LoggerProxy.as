@@ -44,6 +44,8 @@ package com.generatorsystems.puremvc.multicore.cores.logger.model
 		override public function onRemove():void
 		{
 			super.onRemove();
+			
+			data = null;
 		}
         
         public function addLogEntry(__message:LogMessage):void

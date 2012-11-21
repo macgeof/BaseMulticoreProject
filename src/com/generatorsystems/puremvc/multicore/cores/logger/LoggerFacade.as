@@ -73,14 +73,16 @@ package com.generatorsystems.puremvc.multicore.cores.logger
 		 
 		 override public function destroy():void
 		 {
-			 //remov e all commands
-			 removeCommand(STARTUP);
+			 super.destroy();
+			 
+			 //remove all non-super commands commands
 			 removeCommand(LOG_MSG);
 			 removeCommand(CREATE_LOG_BUTTON);
 			 removeCommand(CREATE_LOG_WINDOW);
 			 
 			 //remove all mediators
 			 removeMediator(LoggerJunctionMediator.NAME);
+			 removeMediator(LoggerMediator.NAME);
 			 
 			 //remove all proxies
 			 removeProxy(LoggerProxy.NAME);

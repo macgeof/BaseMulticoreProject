@@ -28,9 +28,9 @@ package com.generatorsystems.projects.multicoredemo.view
 	{
 		public static const NAME:String = 'ShellJunctionMediator';
 		
-		public function ShellJunctionMediator( )
+		public function ShellJunctionMediator(__name:String = NAME )
 		{
-			super( NAME, new Junction() );
+			super( __name, new Junction() );
 		}
 
 		/**
@@ -52,7 +52,7 @@ package com.generatorsystems.projects.multicoredemo.view
 			junction.addPipeListener( GBPipeAwareFlexCore.STDIN, this, handlePipeMessage );
 			
 			// The STDLOG pipe from the shell to the logger
-			junction.registerPipe( GBPipeAwareFlexCore.STDLOG, Junction.OUTPUT, new Pipe() );
+			_createStdLogPipe();
 
 		}
 		
@@ -82,8 +82,14 @@ package com.generatorsystems.projects.multicoredemo.view
 			{
 				case ShellFacade.KILL_LOGGER :
 					sendNotification(LogMessage.SEND_TO_LOG,"Request about to send to destroy Logger core.",LogMessage.LEVELS[LogMessage.DEBUG]);
+					//send destroy to logger to handle its own tidy up
 					junction.sendMessage(GBPipeAwareFlexCore.STDLOG, new UIQueryMessage(GBNotifications.DESTROY, Cores.LOGGER));
-					trace("logger destroyed = " + (!Facade.hasCore(Cores.LOGGER)));
+					
+					//remove and recreate the stdlog pipe
+					_createStdLogPipe();
+					
+					//send destroy internal to shell to tidy up logger references
+					sendNotification(GBNotifications.DESTROY, Cores.LOGGER);
 					break;
 				
 				case ShellFacade.LOGGER_AVAILABLE_TO_CONNECT :
@@ -123,6 +129,14 @@ package com.generatorsystems.projects.multicoredemo.view
 					super.handleNotification(__note);
 					
 			}
+		}
+		
+		protected function _createStdLogPipe():void
+		{
+			if (junction.hasOutputPipe(GBPipeAwareFlexCore.STDLOG)) junction.removePipe(GBPipeAwareFlexCore.STDLOG);
+			
+			// The STDLOG pipe from the shell to the logger
+			junction.registerPipe( GBPipeAwareFlexCore.STDLOG, Junction.OUTPUT, new Pipe() );
 		}
 		
 		/**

@@ -22,6 +22,7 @@ package com.generatorsystems.puremvc.multicore.cores.logger.view
 	import org.puremvc.as3.multicore.utilities.pipes.plumbing.Filter;
 	import org.puremvc.as3.multicore.utilities.pipes.plumbing.Junction;
 	import org.puremvc.as3.multicore.utilities.pipes.plumbing.JunctionMediator;
+	import org.puremvc.as3.multicore.utilities.pipes.plumbing.Pipe;
 	import org.puremvc.as3.multicore.utilities.pipes.plumbing.PipeListener;
 	import org.puremvc.as3.multicore.utilities.pipes.plumbing.TeeMerge;
 	
@@ -30,6 +31,8 @@ package com.generatorsystems.puremvc.multicore.cores.logger.view
 		public static const NAME:String = 'LoggerJunctionMediator';
 		
 		private var _loggerModule:LoggerModule;
+		protected var _teeMerge:TeeMerge;
+		protected var _filter:Filter;
 
 		/**
 		 * Constructor.
@@ -63,21 +66,48 @@ package com.generatorsystems.puremvc.multicore.cores.logger.view
 		 */
 		override public function onRegister():void
 		{
-			var __teeMerge:TeeMerge = new TeeMerge();
-			var __filter:Filter = new Filter( LogFilterMessage.LOG_FILTER_NAME,
+			_teeMerge = new TeeMerge();
+			_filter = new Filter( LogFilterMessage.LOG_FILTER_NAME,
 										    null,
 										    LogFilterMessage.filterLogByLevel as Function
 										    );
-			__filter.connect(new PipeListener(this,handlePipeMessage));
-			__teeMerge.connect(__filter);
-			junction.registerPipe( GBPipeAwareFlexCore.STDIN, Junction.INPUT, __teeMerge );
+			_filter.connect(new PipeListener(this,handlePipeMessage));
+			_teeMerge.connect(_filter);
+			junction.registerPipe( GBPipeAwareFlexCore.STDIN, Junction.INPUT, _teeMerge );
 		}
 		
 		override public function onRemove():void
 		{
 			super.onRemove();
 			
+			//tidy up the plumbing
+			_filter.disconnect();
+			_teeMerge.disconnect();
+			
+			//go through the pipes
+			var __pipename:String = GBPipeAwareFlexCore.STDIN;
+			var __pipe:IPipeFitting = junction.retrievePipe(__pipename);
+			_removePipe(__pipe, __pipename);
+			__pipename = GBPipeAwareFlexCore.STDLOG;
+			__pipe = junction.retrievePipe(__pipename);
+			_removePipe(__pipe, __pipename);
+			__pipename = GBPipeAwareFlexCore.STDOUT;
+			__pipe = junction.retrievePipe(__pipename);
+			_removePipe(__pipe, __pipename);
+			__pipename = GBPipeAwareFlexCore.STDSHELL;
+			__pipe = junction.retrievePipe(__pipename);
+			_removePipe(__pipe, __pipename);
 			_loggerModule = null;
+		}
+		
+		private function _removePipe(__pipe:IPipeFitting, __name:String):void
+		{
+			if (__pipe)
+			{
+				__pipe.disconnect();
+				junction.removePipe(__name);
+				__pipe = null;
+			}
 		}
 		
 		/**
@@ -164,8 +194,6 @@ package com.generatorsystems.puremvc.multicore.cores.logger.view
 		 */
 		override public function handlePipeMessage( __message:IPipeMessage ):void
 		{
-//			sendNotification( LoggerFacade.LOG_MSG, new LogMessage(LogMessage.INFO, this.multitonKey, "Logger core handling pipe message : body = '" + __message.getBody() + "' : header = '" + __message.getHeader() + "' : type = '" + __message.getType() + "'") );
-			var __isMessage:Boolean = __message is Message;
 			if ( __message is LogMessage ) 
 			{
 				sendNotification( LoggerFacade.LOG_MSG, __message );
