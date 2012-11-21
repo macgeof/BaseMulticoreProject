@@ -17,9 +17,6 @@
     <application path="BaseMulticoreProject.mxml">
       <airExcludes/>
     </application>
-    <application path="BaseMulticorePureMVC.mxml">
-      <airExcludes/>
-    </application>
   </applications>
   <modules/>
   <buildCSSFiles/>
@@ -34,4 +31,3 @@
     </buildTarget>
   </buildTargets>
 </actionScriptProperties>
-

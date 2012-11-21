@@ -11,7 +11,6 @@
 	<fx:Metadata>
 		[Event('logLevel')]
 	</fx:Metadata>
-	<fx:Style source="BaseMulticoreProject.css"/>
 	
 	<fx:Script>
 		<![CDATA[
@@ -36,9 +35,12 @@
 			public static const NAME:String 		= 'BaseMulticoreProject';
 			protected static const KILL_LOGGER:String = "Kill Logger";
 			protected static const CREATE_LOGGER:String = "Create Logger";
+			protected static const KILL_WELCOME:String = "Kill Welcome";
+			protected static const CREATE_WELCOME:String = "Create Welcome";
 			
 			[Bindable] public var logLevel:Number;
 			[Bindable] protected var killCreateButtonLabel:String = KILL_LOGGER;
+			[Bindable] protected var killCreateWelcomeLabel:String = KILL_WELCOME;
 			
 			private var _logButton:Button;
 			private var _logWindow:TitleWindow;
@@ -147,6 +149,12 @@
 				killCreateButtonLabel = (Facade.hasCore(Cores.LOGGER)) ? CREATE_LOGGER : KILL_LOGGER;
 			}
 			
+			protected function killCreateWelcome_clickHandler(event:MouseEvent):void
+			{
+				//logic for label changing may seem wrong way round, but label is updated before the core is created/destroyed ;)
+				killCreateWelcomeLabel = (Facade.hasCore(Cores.WELCOME)) ? CREATE_WELCOME : KILL_WELCOME;
+			}
+			
 		]]>
 	</fx:Script>
 	<fx:Declarations>
@@ -156,6 +164,7 @@
 				  paddingBottom="30" paddingLeft="40" paddingRight="40" paddingTop="30"
 				  verticalAlign="bottom">
 			<s:Button id="killCreateLogger" label="{killCreateButtonLabel}" click="killCreateLogger_clickHandler(event)" />
+			<s:Button id="killCreateWelcome" label="{killCreateWelcomeLabel}" click="killCreateWelcome_clickHandler(event)" />
 		</s:HGroup>
 		
 		<s:HGroup width="1280" height="40" gap="20" paddingBottom="10" paddingLeft="30"
