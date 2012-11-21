@@ -5,12 +5,13 @@
  */
 package com.generatorsystems.projects.multicoredemo.view
 {
+	import com.gb.puremvc.GBCore;
 	import com.gb.puremvc.GBPipeAwareFlexCore;
 	import com.gb.puremvc.model.enum.GBNotifications;
 	import com.gb.puremvc.view.GBFlexMediator;
 	import com.generatorsystems.projects.multicoredemo.ShellFacade;
 	import com.generatorsystems.projects.multicoredemo.model.enums.Cores;
-	import com.generatorsystems.puremvc.multicore.cores.logger.LoggerModule;
+	import com.generatorsystems.puremvc.multicore.cores.logger.LoggerCore;
 	
 	import org.puremvc.as3.multicore.interfaces.INotification;
 	import org.puremvc.as3.multicore.patterns.facade.Facade;
@@ -29,13 +30,13 @@ package com.generatorsystems.projects.multicoredemo.view
 	 * LoggerModule, which implements IPipeAware, an interface that
 	 * requires methods for accepting input and output pipes.</P>
 	 */
-	public class LoggerModuleMediator extends GBFlexMediator
+	public class LoggerCoreMediator extends GBFlexMediator
 	{
-		public static const NAME:String = 'LoggerModuleMediator';
+		public static const NAME:String = 'LoggerCoreMediator';
 		
-		public function LoggerModuleMediator(__name:String = NAME )
+		public function LoggerCoreMediator(__name:String = NAME, __view:GBCore = null )
 		{
-			super(__name);
+			super(__name, __view);
 		}
 
 		/**
@@ -76,7 +77,7 @@ package com.generatorsystems.projects.multicoredemo.view
 					break;
 				
 				case ShellFacade.CREATE_LOGGER :
-					var __logger:LoggerModule = new LoggerModule();
+					var __logger:LoggerCore = new LoggerCore();
 					__logger.startup();
 					viewComponent = __logger;
 					sendNotification(ShellFacade.LOGGER_AVAILABLE_TO_CONNECT);
@@ -111,9 +112,9 @@ package com.generatorsystems.projects.multicoredemo.view
 		/**
 		 * The Logger Module.
 		 */
-		private function get loggerCore():LoggerModule
+		private function get loggerCore():LoggerCore
 		{
-			return viewComponent as LoggerModule;
+			return viewComponent as LoggerCore;
 		}
 		
 	

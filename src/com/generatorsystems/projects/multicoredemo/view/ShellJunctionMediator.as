@@ -11,7 +11,7 @@ package com.generatorsystems.projects.multicoredemo.view
 	import com.gb.puremvc.model.messages.UIQueryMessage;
 	import com.generatorsystems.projects.multicoredemo.ShellFacade;
 	import com.generatorsystems.projects.multicoredemo.model.enums.Cores;
-	import com.generatorsystems.puremvc.multicore.cores.logger.LoggerModule;
+	import com.generatorsystems.puremvc.multicore.cores.logger.LoggerCore;
 	
 	import org.puremvc.as3.multicore.interfaces.INotification;
 	import org.puremvc.as3.multicore.patterns.facade.Facade;
@@ -99,12 +99,12 @@ package com.generatorsystems.projects.multicoredemo.view
 							
 				case ShellFacade.REQUEST_LOG_BUTTON:
 					sendNotification(LogMessage.SEND_TO_LOG,"Requesting log button from LoggerModule.",LogMessage.LEVELS[LogMessage.DEBUG]);
-					junction.sendMessage(GBPipeAwareFlexCore.STDLOG,new UIQueryMessage(UIQueryMessage.GET,LoggerModule.LOG_BUTTON_UI));
+					junction.sendMessage(GBPipeAwareFlexCore.STDLOG,new UIQueryMessage(UIQueryMessage.GET,LoggerCore.LOG_BUTTON_UI));
 					break;
 
 				case ShellFacade.REQUEST_LOG_WINDOW:
 					sendNotification(LogMessage.SEND_TO_LOG,"Requesting log window from LoggerModule.",LogMessage.LEVELS[LogMessage.DEBUG]);
-					junction.sendMessage(GBPipeAwareFlexCore.STDLOG,new UIQueryMessage(UIQueryMessage.GET,LoggerModule.LOG_WINDOW_UI));
+					junction.sendMessage(GBPipeAwareFlexCore.STDLOG,new UIQueryMessage(UIQueryMessage.GET,LoggerCore.LOG_WINDOW_UI));
 					break;
 
 				case  ShellFacade.CONNECT_MODULE_TO_SHELL:
@@ -164,12 +164,12 @@ package com.generatorsystems.projects.multicoredemo.view
 			{
 				switch ( UIQueryMessage(__message).name )
 				{
-					case LoggerModule.LOG_BUTTON_UI:
+					case LoggerCore.LOG_BUTTON_UI:
 						sendNotification(ShellFacade.SHOW_LOG_BUTTON, UIQueryMessage(__message).component, UIQueryMessage(__message).name )
 						junction.sendMessage(GBPipeAwareFlexCore.STDLOG,new LogMessage(LogMessage.INFO,this.multitonKey,'Recieved the Log Button on STDSHELL'));
 						break;
 
-					case LoggerModule.LOG_WINDOW_UI:
+					case LoggerCore.LOG_WINDOW_UI:
 						sendNotification(ShellFacade.SHOW_LOG_WINDOW, UIQueryMessage(__message).component, UIQueryMessage(__message).name )
 						junction.sendMessage(GBPipeAwareFlexCore.STDLOG,new LogMessage(LogMessage.INFO,this.multitonKey,'Recieved the Log Window on STDSHELL'));
 						break;

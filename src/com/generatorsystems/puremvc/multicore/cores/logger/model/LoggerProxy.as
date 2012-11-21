@@ -29,7 +29,7 @@ package com.generatorsystems.puremvc.multicore.cores.logger.model
 	 */
 	public class LoggerProxy extends AbstractProxy
 	{
-        public static const NAME:String = 'LoggerProxy';
+        public static const NAME:String = 'WelcomeProxy';
 
 		public function LoggerProxy(__name:String, __data:* = null)
         {

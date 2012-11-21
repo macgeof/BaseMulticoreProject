@@ -5,19 +5,42 @@
  */
 package com.generatorsystems.puremvc.multicore.cores.welcome
 {
-	import com.gb.puremvc.GBPipeAwareFlexCore;
-	import com.generatorsystems.puremvc.multicore.cores.welcome.WelcomeFacade;
+	import com.gb.puremvc.GBPipeAwareCore;
+	import com.generatorsystems.projects.multicoredemo.model.enums.Cores;
+	import com.generatorsystems.puremvc.multicore.cores.welcome.controller.StartupCommand;
+	import com.generatorsystems.puremvc.multicore.cores.welcome.model.WelcomeProxy;
+	import com.generatorsystems.puremvc.multicore.cores.welcome.view.WelcomeMediator;
 
-	public class WelcomeCore extends GBPipeAwareFlexCore
+	public class WelcomeCore extends GBPipeAwareCore
 	{
 		public static const NAME:String 			= 'WelcomeCore';
-		public static const WELCOME_BUTTON_UI:String 	= 'WelcomeButtonUI';
-		public static const WELCOME_WINDOW_UI:String 	= 'WelcomeWindowUI';
 		
 		public function WelcomeCore()
 		{
-			super(WelcomeFacade.getInstance( NAME ));
-			WelcomeFacade(facade).startup( this );
+			facade = WelcomeFacade.getInstance(Cores.WELCOME);
+			super(facade);
+		}
+		
+		
+		override public function get coreMediator():Class
+		{
+			return WelcomeMediator;
+		}
+		
+		override public function get coreProxy():Class
+		{
+			return WelcomeProxy;
+		}
+		
+		override public function startup():void
+		{			
+			WelcomeFacade(facade).startup(this, StartupCommand);
+		}
+		
+		override public function destroy():void
+		{
+			facade.destroy();
+			
 		}
 1
 	}

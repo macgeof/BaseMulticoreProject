@@ -7,8 +7,9 @@ package com.generatorsystems.projects.multicoredemo.controller
 {
     import com.generatorsystems.projects.multicoredemo.ShellFacade;
     import com.generatorsystems.projects.multicoredemo.model.ShellDataProxy;
-    import com.generatorsystems.projects.multicoredemo.view.LoggerModuleMediator;
+    import com.generatorsystems.projects.multicoredemo.view.LoggerCoreMediator;
     import com.generatorsystems.projects.multicoredemo.view.ShellJunctionMediator;
+    import com.generatorsystems.projects.multicoredemo.view.WelcomeCoreMediator;
     
     import org.puremvc.as3.multicore.interfaces.ICommand;
     import org.puremvc.as3.multicore.interfaces.INotification;
@@ -51,7 +52,10 @@ package com.generatorsystems.projects.multicoredemo.controller
 			facade.registerMediator(new ShellJunctionMediator(ShellJunctionMediator.NAME));
 			
 			// Create and Register the Logger Module and its Mediator
-			facade.registerMediator(new LoggerModuleMediator(LoggerModuleMediator.NAME));
+			facade.registerMediator(new LoggerCoreMediator(LoggerCoreMediator.NAME));
+			
+			// Create and Register the Welcome Module and its Mediator
+			facade.registerMediator(new WelcomeCoreMediator(WelcomeCoreMediator.NAME));
 
 			sendNotification(ShellFacade.CREATE_LOGGER);
         }

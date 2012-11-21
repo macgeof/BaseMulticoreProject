@@ -4,6 +4,7 @@ package com.generatorsystems.projects.multicoredemo.view
 	import com.gb.puremvc.model.messages.LogFilterMessage;
 	import com.gb.puremvc.view.GBFlexMediator;
 	import com.generatorsystems.projects.multicoredemo.ShellFacade;
+	import com.generatorsystems.projects.multicoredemo.model.enums.Cores;
 	import com.generatorsystems.puremvc.multicore.cores.logger.view.components.LogWindow;
 	
 	import flash.events.Event;
@@ -13,6 +14,7 @@ package com.generatorsystems.projects.multicoredemo.view
 	
 	import org.puremvc.as3.multicore.interfaces.IMediator;
 	import org.puremvc.as3.multicore.interfaces.INotification;
+	import org.puremvc.as3.multicore.patterns.facade.Facade;
 	
 	import spark.components.Button;
 	import spark.components.TitleWindow;
@@ -38,6 +40,7 @@ package com.generatorsystems.projects.multicoredemo.view
 			
 			app.addEventListener( BaseMulticoreProject.LOG_LEVEL, onLogLevel );	
 			app.killCreateLogger.addEventListener(MouseEvent.CLICK, _killCreateLogger_Handler);	
+			app.killCreateWelcome.addEventListener(MouseEvent.CLICK, _killCreateWelcome_Handler);	
 		}
 		
 		override public function onRemove():void
@@ -147,7 +150,13 @@ package com.generatorsystems.projects.multicoredemo.view
 		
 		private function _killCreateLogger_Handler(__event:MouseEvent):void
 		{
-			var __noteName:String = (app.logButton == null) ? ShellFacade.CREATE_LOGGER : ShellFacade.KILL_LOGGER;
+			var __noteName:String = (Facade.hasCore(Cores.LOGGER)) ? ShellFacade.KILL_LOGGER : ShellFacade.CREATE_LOGGER;
+			sendNotification(__noteName);
+		}
+		
+		private function _killCreateWelcome_Handler(__event:MouseEvent):void
+		{
+			var __noteName:String = (Facade.hasCore(Cores.WELCOME)) ? ShellFacade.KILL_WELCOME : ShellFacade.CREATE_WELCOME;
 			sendNotification(__noteName);
 		}
 		

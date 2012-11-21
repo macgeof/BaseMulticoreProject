@@ -14,13 +14,13 @@ package com.generatorsystems.puremvc.multicore.cores.logger
 	
 	import org.puremvc.as3.multicore.patterns.facade.Facade;
 
-	public class LoggerModule extends GBPipeAwareCore
+	public class LoggerCore extends GBPipeAwareCore
 	{
-		public static const NAME:String 			= 'LoggerModule';
+		public static const NAME:String 			= 'WelcomeCore';
 		public static const LOG_BUTTON_UI:String 	= 'LogButtonUI';
 		public static const LOG_WINDOW_UI:String 	= 'LogWindowUI';
 		
-		public function LoggerModule()
+		public function LoggerCore()
 		{
 			facade = LoggerFacade.getInstance(Cores.LOGGER);
 			super(facade);

@@ -5,25 +5,22 @@
  */
 package com.generatorsystems.puremvc.multicore.cores.welcome
 {
+	import com.gb.puremvc.interfaces.ICoreFacade;
 	import com.gb.puremvc.model.enum.GBNotifications;
 	import com.gb.puremvc.patterns.GBCoreFacade;
-	import com.generatorsystems.puremvc.multicore.cores.welcome.controller.CreateWelcomeButtonCommand;
-	import com.generatorsystems.puremvc.multicore.cores.welcome.controller.CreateWelcomeWindowCommand;
 	import com.generatorsystems.puremvc.multicore.cores.welcome.controller.StartupCommand;
+	import com.generatorsystems.puremvc.multicore.cores.welcome.model.WelcomeProxy;
+	import com.generatorsystems.puremvc.multicore.cores.welcome.view.WelcomeJunctionMediator;
+	import com.generatorsystems.puremvc.multicore.cores.welcome.view.WelcomeMediator;
 
 	/**
 	 * Application Facade for Logger Module.
 	 */ 
-	public class WelcomeFacade extends GBCoreFacade
+	public class WelcomeFacade extends GBCoreFacade implements ICoreFacade
 	{
         public static const STARTUP:String 				= 'startup';
-        public static const LOG_MSG:String 				= 'logMessage';
-        public static const CREATE_LOG_BUTTON:String	= 'createLogButton';
-        public static const CREATE_LOG_WINDOW:String	= 'createLogWindow';
-        public static const EXPORT_LOG_BUTTON:String	= 'exportLogButton';
-        public static const EXPORT_LOG_WINDOW:String	= 'exportLogWindow';
                 
-        public function LoggerFacade( __key:String )
+        public function WelcomeFacade( __key:String )
         {
             super(__key);    
         }
@@ -44,8 +41,6 @@ package com.generatorsystems.puremvc.multicore.cores.welcome
         {
             super.initializeController();            
             registerCommand( STARTUP, StartupCommand );
-            registerCommand( CREATE_LOG_WINDOW, CreateWelcomeWindowCommand );
-            registerCommand( CREATE_LOG_BUTTON, CreateWelcomeButtonCommand );
         }
         
         /**
@@ -61,6 +56,20 @@ package com.generatorsystems.puremvc.multicore.cores.welcome
 			 
 			 registerCommand(GBNotifications.STARTUP, startupCommand);
 			 sendNotification(GBNotifications.STARTUP, core);
+		 }
+		 
+		 override public function destroy():void
+		 {
+			 super.destroy();
+			 
+			 //remove all non-super commands commands
+			 
+			 //remove all mediators
+			 removeMediator(WelcomeJunctionMediator.NAME);
+			 removeMediator(WelcomeMediator.NAME);
+			 
+			 //remove all proxies
+			 removeProxy(WelcomeProxy.NAME);
 		 }
 	}
 }

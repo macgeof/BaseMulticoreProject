@@ -40,7 +40,7 @@
 			
 			[Bindable] public var logLevel:Number;
 			[Bindable] protected var killCreateButtonLabel:String = KILL_LOGGER;
-			[Bindable] protected var killCreateWelcomeLabel:String = KILL_WELCOME;
+			[Bindable] protected var killCreateWelcomeLabel:String = CREATE_WELCOME;
 			
 			private var _logButton:Button;
 			private var _logWindow:TitleWindow;

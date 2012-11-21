@@ -7,7 +7,7 @@ package com.generatorsystems.puremvc.multicore.cores.logger.controller
 {
     import com.gb.puremvc.controller.CoreStartupCommand;
     import com.gb.puremvc.model.enum.GBNotifications;
-    import com.generatorsystems.puremvc.multicore.cores.logger.LoggerModule;
+    import com.generatorsystems.puremvc.multicore.cores.logger.LoggerCore;
     import com.generatorsystems.puremvc.multicore.cores.logger.model.LoggerProxy;
     import com.generatorsystems.puremvc.multicore.cores.logger.view.LoggerJunctionMediator;
     
@@ -35,7 +35,7 @@ package com.generatorsystems.puremvc.multicore.cores.logger.controller
         	// output pipes and therefore does not need a Mediator.
         	
        		/*facade.registerProxy( new LoggerProxy( ) );*/
-       		facade.registerMediator( new LoggerJunctionMediator( note.getBody() as LoggerModule ) );
+       		facade.registerMediator( new LoggerJunctionMediator( note.getBody() as LoggerCore ) );
 			
 			sendNotification(GBNotifications.STARTUP_COMPLETE);
         }

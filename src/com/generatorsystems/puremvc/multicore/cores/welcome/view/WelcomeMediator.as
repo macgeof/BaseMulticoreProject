@@ -1,17 +1,17 @@
-package com.generatorsystems.puremvc.multicore.cores.logger.view
+package com.generatorsystems.puremvc.multicore.cores.welcome.view
 {
 	import com.gb.puremvc.model.enum.GBNotifications;
 	import com.gb.puremvc.view.AbstractMediator;
-	import com.generatorsystems.puremvc.multicore.cores.logger.LoggerCore;
+	import com.generatorsystems.puremvc.multicore.cores.welcome.WelcomeCore;
 	
 	import org.puremvc.as3.multicore.interfaces.INotification;
 	
-	public class LoggerMediator extends AbstractMediator
+	public class WelcomeMediator extends AbstractMediator
 	{
 		
 		public static const NAME:String = "WelcomeMediator";
 		
-		public function LoggerMediator(mediatorName:String=null, viewComponent:Object=null)
+		public function WelcomeMediator(mediatorName:String=null, viewComponent:Object=null)
 		{
 			super(mediatorName, viewComponent);
 		}
@@ -48,9 +48,9 @@ package com.generatorsystems.puremvc.multicore.cores.logger.view
 			}
 		}
 		
-		protected function get loggerModule():LoggerCore
+		protected function get welcomeCore():WelcomeCore
 		{
-			return viewComponent as LoggerCore;
+			return viewComponent as WelcomeCore;
 		}
 	}
 }

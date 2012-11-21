@@ -6,17 +6,15 @@
 package com.generatorsystems.puremvc.multicore.cores.welcome.view
 {
 	import com.gb.puremvc.GBPipeAwareFlexCore;
+	import com.gb.puremvc.model.enum.GBNotifications;
 	import com.gb.puremvc.model.messages.LogFilterMessage;
 	import com.gb.puremvc.model.messages.LogMessage;
-	import com.gb.puremvc.model.messages.UIQueryMessage;
 	import com.generatorsystems.puremvc.multicore.cores.welcome.WelcomeCore;
-	import com.generatorsystems.puremvc.multicore.cores.welcome.WelcomeFacade;
-	
-	import mx.core.UIComponent;
 	
 	import org.puremvc.as3.multicore.interfaces.INotification;
 	import org.puremvc.as3.multicore.utilities.pipes.interfaces.IPipeFitting;
 	import org.puremvc.as3.multicore.utilities.pipes.interfaces.IPipeMessage;
+	import org.puremvc.as3.multicore.utilities.pipes.messages.Message;
 	import org.puremvc.as3.multicore.utilities.pipes.plumbing.Filter;
 	import org.puremvc.as3.multicore.utilities.pipes.plumbing.Junction;
 	import org.puremvc.as3.multicore.utilities.pipes.plumbing.JunctionMediator;
@@ -26,6 +24,10 @@ package com.generatorsystems.puremvc.multicore.cores.welcome.view
 	public class WelcomeJunctionMediator extends JunctionMediator
 	{
 		public static const NAME:String = 'WelcomeJunctionMediator';
+		
+		private var _welcomeCore:WelcomeCore;
+/*		protected var _teeMerge:TeeMerge;
+		protected var _filter:Filter;*/
 
 		/**
 		 * Constructor.
@@ -37,9 +39,11 @@ package com.generatorsystems.puremvc.multicore.cores.welcome.view
 		 * as separate pipes registered with the
 		 * Junction.</P>
 		 */ 		
-		public function WelcomeJunctionMediator( )
+		public function WelcomeJunctionMediator( core:WelcomeCore )
 		{
 			super( NAME, new Junction() );
+			
+			_welcomeCore = core;
 			
 		}
 
@@ -57,14 +61,50 @@ package com.generatorsystems.puremvc.multicore.cores.welcome.view
 		 */
 		override public function onRegister():void
 		{
-			var __teeMerge:TeeMerge = new TeeMerge();
-			var __filter:Filter = new Filter( LogFilterMessage.LOG_FILTER_NAME,
+			super.onRegister();
+			
+/*			_teeMerge = new TeeMerge();
+			_filter = new Filter( LogFilterMessage.LOG_FILTER_NAME,
 										    null,
 										    LogFilterMessage.filterLogByLevel as Function
 										    );
-			__filter.connect(new PipeListener(this,handlePipeMessage));
-			__teeMerge.connect(__filter);
-			junction.registerPipe( GBPipeAwareFlexCore.STDIN, Junction.INPUT, __teeMerge );
+			_filter.connect(new PipeListener(this,handlePipeMessage));
+			_teeMerge.connect(_filter);
+			junction.registerPipe( GBPipeAwareFlexCore.STDIN, Junction.INPUT, _teeMerge );*/
+		}
+		
+		override public function onRemove():void
+		{
+			super.onRemove();
+			
+			//tidy up the plumbing
+/*			_filter.disconnect();
+			_teeMerge.disconnect();*/
+			
+			//go through the pipes
+			var __pipename:String = GBPipeAwareFlexCore.STDIN;
+			var __pipe:IPipeFitting = junction.retrievePipe(__pipename);
+			_removePipe(__pipe, __pipename);
+			__pipename = GBPipeAwareFlexCore.STDLOG;
+			__pipe = junction.retrievePipe(__pipename);
+			_removePipe(__pipe, __pipename);
+			__pipename = GBPipeAwareFlexCore.STDOUT;
+			__pipe = junction.retrievePipe(__pipename);
+			_removePipe(__pipe, __pipename);
+			__pipename = GBPipeAwareFlexCore.STDSHELL;
+			__pipe = junction.retrievePipe(__pipename);
+			_removePipe(__pipe, __pipename);
+			_welcomeCore = null;
+		}
+		
+		private function _removePipe(__pipe:IPipeFitting, __name:String):void
+		{
+			if (__pipe)
+			{
+				__pipe.disconnect();
+				junction.removePipe(__name);
+				__pipe = null;
+			}
 		}
 		
 		/**
@@ -75,8 +115,7 @@ package com.generatorsystems.puremvc.multicore.cores.welcome.view
 		override public function listNotificationInterests():Array
 		{
 			var __interests:Array = super.listNotificationInterests();
-			__interests.push(WelcomeFacade.EXPORT_LOG_BUTTON);
-			__interests.push(WelcomeFacade.EXPORT_LOG_WINDOW);
+			__interests.push(GBNotifications.STARTUP_COMPLETE);
 			return __interests;
 		}
 
@@ -100,39 +139,13 @@ package com.generatorsystems.puremvc.multicore.cores.welcome.view
 			
 			switch( __note.getName() )
 			{
-				// Send the LogButton UI Component 
-				case WelcomeFacade.EXPORT_LOG_BUTTON:
-					var __logButtonMessage:UIQueryMessage = new UIQueryMessage( UIQueryMessage.SET, WelcomeCore.LOG_BUTTON_UI, UIComponent(__note.getBody()) );
-					__logMessage = new LogMessage(LogMessage.INFO, this.multitonKey, "LogButton about to be exported from Logger core");
-					__logged = junction.sendMessage( GBPipeAwareFlexCore.STDSHELL, __logMessage);
-					var buttonExported:Boolean = junction.sendMessage( GBPipeAwareFlexCore.STDSHELL, __logButtonMessage );
-					break;
-				
-				// Send the LogWindow UI Component 
-				case WelcomeFacade.EXPORT_LOG_WINDOW:
-					var __logWindowMessage:UIQueryMessage = new UIQueryMessage( UIQueryMessage.SET, WelcomeCore.LOG_WINDOW_UI, UIComponent(__note.getBody()) );
-					__logMessage = new LogMessage(LogMessage.INFO, this.multitonKey, "LogWindow about to be exported from Logger core");
-					__logged = junction.sendMessage( GBPipeAwareFlexCore.STDSHELL, __logMessage);
-					junction.sendMessage( GBPipeAwareFlexCore.STDSHELL, __logWindowMessage );
-					break;
-				
-				// Add an input pipe (special handling for LoggerModule) 
-				case JunctionMediator.ACCEPT_INPUT_PIPE:
-					var __name:String = __note.getType();
-					
-					// STDIN is a Merging Tee. Overriding super to handle this.
-					if (__name == GBPipeAwareFlexCore.STDIN) {
-						var __pipe:IPipeFitting = __note.getBody() as IPipeFitting;
-						var __tee:TeeMerge = junction.retrievePipe(GBPipeAwareFlexCore.STDIN) as TeeMerge;
-						__tee.connectInput(__pipe);
-					} 
-					// Use super for any other input pipe
-					else {
-						super.handleNotification(__note); 
-					} 
+				//core startup complete
+				case GBNotifications.STARTUP_COMPLETE :
+					var __message:Message = new Message(GBNotifications.STARTUP_COMPLETE, welcomeCore);
+					__logged = junction.sendMessage(GBPipeAwareFlexCore.STDSHELL, __message);
 					break;
 
-				// And let super handle the rest (ACCEPT_OUTPUT_PIPE)								
+				// And let super handle the rest (ACCEPT_OUTPUT_PIPE ACCEPT_INPUT_PIPE)								
 				default:
 					super.handleNotification(__note);
 					
@@ -144,23 +157,11 @@ package com.generatorsystems.puremvc.multicore.cores.welcome.view
 		 */
 		override public function handlePipeMessage( __message:IPipeMessage ):void
 		{
-			if ( __message is LogMessage ) 
-			{
-				sendNotification( WelcomeFacade.LOG_MSG, __message );
-			} 
-			else if ( __message is UIQueryMessage )
-			{
-				switch ( UIQueryMessage(__message).name )
-				{
-					case WelcomeCore.WELCOME_BUTTON_UI :
-						sendNotification(WelcomeFacade.CREATE_LOG_BUTTON)
-						break;
-
-					case WelcomeCore.WELCOME_WINDOW_UI :
-						sendNotification(WelcomeFacade.CREATE_LOG_WINDOW )
-						break;
-				}
-			}
+		}
+		
+		protected function get welcomeCore():WelcomeCore
+		{
+			return _welcomeCore as WelcomeCore;
 		}
 	}
 }

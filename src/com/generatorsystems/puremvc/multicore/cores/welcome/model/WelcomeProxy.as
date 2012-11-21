@@ -6,11 +6,9 @@
 package com.generatorsystems.puremvc.multicore.cores.welcome.model
 {
 	
-	import com.gb.puremvc.model.messages.LogMessage;
+	import com.gb.puremvc.model.AbstractProxy;
 	
 	import mx.collections.ArrayCollection;
-	
-	import org.puremvc.as3.multicore.patterns.proxy.Proxy;
 
 	/**
 	 * The Logger Proxy.
@@ -26,23 +24,25 @@ package com.generatorsystems.puremvc.multicore.cores.welcome.model
 	 * will automatically be refreshed when the
 	 * contents of the ArrayCollection changes.</P>
 	 */
-	public class WelcomeProxy extends Proxy
+	public class WelcomeProxy extends AbstractProxy
 	{
         public static const NAME:String = 'WelcomeProxy';
 
-		public function WelcomeProxy()
+		public function WelcomeProxy(__name:String, __data:* = null)
         {
             super( NAME, new ArrayCollection() );
         }
-        
-        public function addLogEntry(__message:LogMessage):void
-        {
-        	messages.addItem(__message);
-        }
 		
-		public function get messages():ArrayCollection
+		override public function onRegister():void
 		{
-			return data as ArrayCollection;
+			super.onRegister();
+		}
+		
+		override public function onRemove():void
+		{
+			super.onRemove();
+			
+			data = null;
 		}
 	}
 }

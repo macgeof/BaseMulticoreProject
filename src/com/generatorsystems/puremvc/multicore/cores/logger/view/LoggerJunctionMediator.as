@@ -11,7 +11,7 @@ package com.generatorsystems.puremvc.multicore.cores.logger.view
 	import com.gb.puremvc.model.messages.LogMessage;
 	import com.gb.puremvc.model.messages.UIQueryMessage;
 	import com.generatorsystems.puremvc.multicore.cores.logger.LoggerFacade;
-	import com.generatorsystems.puremvc.multicore.cores.logger.LoggerModule;
+	import com.generatorsystems.puremvc.multicore.cores.logger.LoggerCore;
 	
 	import mx.core.UIComponent;
 	
@@ -28,9 +28,9 @@ package com.generatorsystems.puremvc.multicore.cores.logger.view
 	
 	public class LoggerJunctionMediator extends JunctionMediator
 	{
-		public static const NAME:String = 'LoggerJunctionMediator';
+		public static const NAME:String = 'WelcomeJunctionMediator';
 		
-		private var _loggerModule:LoggerModule;
+		private var _loggerModule:LoggerCore;
 		protected var _teeMerge:TeeMerge;
 		protected var _filter:Filter;
 
@@ -44,7 +44,7 @@ package com.generatorsystems.puremvc.multicore.cores.logger.view
 		 * as separate pipes registered with the
 		 * Junction.</P>
 		 */ 		
-		public function LoggerJunctionMediator( core:LoggerModule )
+		public function LoggerJunctionMediator( core:LoggerCore )
 		{
 			super( NAME, new Junction() );
 			
@@ -152,7 +152,7 @@ package com.generatorsystems.puremvc.multicore.cores.logger.view
 				
 				// Send the LogButton UI Component 
 				case LoggerFacade.EXPORT_LOG_BUTTON:
-					var __logButtonMessage:UIQueryMessage = new UIQueryMessage( UIQueryMessage.SET, LoggerModule.LOG_BUTTON_UI, UIComponent(__note.getBody()) );
+					var __logButtonMessage:UIQueryMessage = new UIQueryMessage( UIQueryMessage.SET, LoggerCore.LOG_BUTTON_UI, UIComponent(__note.getBody()) );
 					__logMessage = new LogMessage(LogMessage.INFO, this.multitonKey, "LogButton about to be exported from Logger core");
 					__logged = junction.sendMessage( GBPipeAwareFlexCore.STDSHELL, __logMessage);
 					var buttonExported:Boolean = junction.sendMessage( GBPipeAwareFlexCore.STDSHELL, __logButtonMessage );
@@ -160,7 +160,7 @@ package com.generatorsystems.puremvc.multicore.cores.logger.view
 				
 				// Send the LogWindow UI Component 
 				case LoggerFacade.EXPORT_LOG_WINDOW:
-					var __logWindowMessage:UIQueryMessage = new UIQueryMessage( UIQueryMessage.SET, LoggerModule.LOG_WINDOW_UI, UIComponent(__note.getBody()) );
+					var __logWindowMessage:UIQueryMessage = new UIQueryMessage( UIQueryMessage.SET, LoggerCore.LOG_WINDOW_UI, UIComponent(__note.getBody()) );
 					__logMessage = new LogMessage(LogMessage.INFO, this.multitonKey, "LogWindow about to be exported from Logger core");
 					__logged = junction.sendMessage( GBPipeAwareFlexCore.STDSHELL, __logMessage);
 					junction.sendMessage( GBPipeAwareFlexCore.STDSHELL, __logWindowMessage );
@@ -208,20 +208,20 @@ package com.generatorsystems.puremvc.multicore.cores.logger.view
 				switch ( UIQueryMessage(__message).name )
 				{
 					
-					case LoggerModule.LOG_BUTTON_UI:
+					case LoggerCore.LOG_BUTTON_UI:
 						sendNotification(LoggerFacade.CREATE_LOG_BUTTON)
 						break;
 
-					case LoggerModule.LOG_WINDOW_UI:
+					case LoggerCore.LOG_WINDOW_UI:
 						sendNotification(LoggerFacade.CREATE_LOG_WINDOW )
 						break;
 				}
 			}
 		}
 		
-		protected function get loggerCore():LoggerModule
+		protected function get loggerCore():LoggerCore
 		{
-			return _loggerModule as LoggerModule;
+			return _loggerModule as LoggerCore;
 		}
 	}
 }

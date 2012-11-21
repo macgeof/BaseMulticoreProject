@@ -12,12 +12,16 @@ package com.generatorsystems.projects.multicoredemo
 		public static const NAME:String = "ApplicationFacade";
 		
 		public static const STARTUP:String 					= 'startup';
-		public static const KILL_LOGGER:String			= 'killLogger';
-		public static const CREATE_LOGGER:String			= 'createLogger';
-		public static const LOGGER_AVAILABLE_TO_CONNECT:String = "loggerAvailableToConnect";
+		
+		//pipe connect notifications
 		public static const CONNECT_SHELL_TO_LOGGER:String  = 'connectShellToLogger';
 		public static const CONNECT_MODULE_TO_LOGGER:String = 'connectModuleToLogger';
 		public static const CONNECT_MODULE_TO_SHELL:String  = 'connectModuleToShell';
+		
+		//logger notifications
+		public static const KILL_LOGGER:String			= 'killLogger';
+		public static const CREATE_LOGGER:String			= 'createLogger';
+		public static const LOGGER_AVAILABLE_TO_CONNECT:String = "loggerAvailableToConnect";
 		public static const REQUEST_LOG_BUTTON:String 		= 'requestLogButton';
 		public static const REQUEST_LOG_WINDOW:String 		= 'requestLogWindow';
 		public static const REQUEST_FEED_WINDOW:String 		= 'requestFeedWindow';
@@ -25,6 +29,11 @@ package com.generatorsystems.projects.multicoredemo
 		public static const SHOW_LOG_WINDOW:String 			= 'showLogWindow';
 		public static const SHOW_FEED_WINDOW:String 		= 'showFeedWindow';
 		public static const REMOVE_FEED_WINDOW:String 		= 'removeFeedWindow';
+		
+		//welcome notificiations
+		public static const KILL_WELCOME:String			= 'killWelcome';
+		public static const CREATE_WELCOME:String			= 'createWelcome';
+		public static const WELCOME_AVAILABLE_TO_CONNECT:String = "welcomeAvailableToConnect";
 		
 		public function ShellFacade(__key:String)
 		{
