@@ -12,6 +12,8 @@ package com.generatorsystems.projects.multicoredemo
 		public static const NAME:String = "ApplicationFacade";
 		
 		public static const STARTUP:String 					= 'startup';
+		public static const KILL_LOGGER:String			= 'killLogger';
+		public static const CREATE_LOGGER:String			= 'createLogger';
 		public static const LOGGER_AVAILABLE_TO_CONNECT:String = "loggerAvailableToConnect";
 		public static const CONNECT_SHELL_TO_LOGGER:String  = 'connectShellToLogger';
 		public static const CONNECT_MODULE_TO_LOGGER:String = 'connectModuleToLogger';

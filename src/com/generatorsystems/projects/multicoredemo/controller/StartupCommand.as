@@ -5,19 +5,14 @@
  */
 package com.generatorsystems.projects.multicoredemo.controller
 {
-    import com.gb.puremvc.controller.AbstractStartupCommand;
-    import com.gb.puremvc.controller.ApplicationStartupCommand;
-    import com.gb.puremvc.model.enum.GBNotifications;
     import com.generatorsystems.projects.multicoredemo.ShellFacade;
     import com.generatorsystems.projects.multicoredemo.model.ShellDataProxy;
     import com.generatorsystems.projects.multicoredemo.view.LoggerModuleMediator;
     import com.generatorsystems.projects.multicoredemo.view.ShellJunctionMediator;
-    import com.generatorsystems.projects.multicoredemo.view.ShellMediator;
     
     import org.puremvc.as3.multicore.interfaces.ICommand;
     import org.puremvc.as3.multicore.interfaces.INotification;
     import org.puremvc.as3.multicore.patterns.command.SimpleCommand;
-    import org.puremvc.as3.multicore.utilities.pipes.plumbing.Junction;
 
 	/**
 	 * Startup the Main Application/Shell.
@@ -58,12 +53,7 @@ package com.generatorsystems.projects.multicoredemo.controller
 			// Create and Register the Logger Module and its Mediator
 			facade.registerMediator(new LoggerModuleMediator());
 
-			sendNotification(GBNotifications.STARTUP_COMPLETE);
-			
-/*			
-			
-			// Request the Log Button UI from the Logger Module       		
-			sendNotification(ShellFacade.REQUEST_LOG_BUTTON);*/
+			sendNotification(ShellFacade.CREATE_LOGGER);
         }
         
     }

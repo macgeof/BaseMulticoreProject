@@ -35,6 +35,16 @@
 			
 			[Bindable] public var logLevel:Number;
 			
+			public function get logButton():Button
+			{
+				return _logButton;
+			}
+
+			public function get killCreateButtonLabel():String
+			{
+				return (logButton == null) ? "Create Logger" : "Kill Logger";
+			}
+			
 			private function _startupApplication():void
 			{
 				_facade = ShellFacade.getInstance(Cores.SHELL);
@@ -47,6 +57,7 @@
 			}
 	
 			private var _logButton:Button;
+			private var _logWindow:TitleWindow;
 			
 			/**
 			* Adds the module-manufactured LogButton to the 
@@ -71,6 +82,7 @@
 				logBox.addElement(__maskDispObj);
 				logBox.addElementAt(__logWindow,0);
 				__logWindow.mask = __maskDispObj;
+				_logWindow = __logWindow;
 			}
 			
 			/**
@@ -106,14 +118,28 @@
 						break; 
 				}
 			}
+			
+			public function removeLogGUI():void
+			{
+				if (_logButton && toolbar.containsElement(_logButton)) toolbar.removeElement(_logButton);
+				_logButton = null;
+				if (_logWindow)
+				{
+					if (_logWindow.hasEventListener(EffectEvent.EFFECT_END)) _logWindow.removeEventListener(EffectEvent.EFFECT_END, _logWindowRemovedEffectHandler);
+					if (logBox.contains(_logWindow)) logBox.removeElement(_logWindow);
+					_logWindow = null;
+				}
+			}
+			
 		]]>
 	</fx:Script>
 	<fx:Declarations>
 	</fx:Declarations>
 	<s:VGroup fontFamily="Georgia">
-		<s:HGroup id="toolbar" width="1280" height="50" fontFamily="Georgia" gap="20"
-				  paddingBottom="10" paddingLeft="40" paddingRight="40" paddingTop="10"
+		<s:HGroup id="toolbar" width="1280" height="90" fontFamily="Georgia" gap="20"
+				  paddingBottom="30" paddingLeft="40" paddingRight="40" paddingTop="30"
 				  verticalAlign="bottom">
+			<s:Button id="killCreateLogger" label="{killCreateButtonLabel}" />
 		</s:HGroup>
 		
 		<s:HGroup width="1280" height="40" gap="20" paddingBottom="10" paddingLeft="30"

@@ -11,6 +11,8 @@ package com.generatorsystems.puremvc.multicore.cores.logger
 	import com.generatorsystems.puremvc.multicore.cores.logger.controller.StartupCommand;
 	import com.generatorsystems.puremvc.multicore.cores.logger.model.LoggerProxy;
 	import com.generatorsystems.puremvc.multicore.cores.logger.view.LoggerMediator;
+	
+	import org.puremvc.as3.multicore.patterns.facade.Facade;
 
 	public class LoggerModule extends GBPipeAwareCore
 	{
@@ -38,6 +40,13 @@ package com.generatorsystems.puremvc.multicore.cores.logger
 		override public function startup():void
 		{			
 			LoggerFacade(facade).startup(this, StartupCommand);
+		}
+		
+		override public function destroy():void
+		{
+			facade.destroy();
+			
+			Facade.removeCore(Cores.LOGGER);
 		}
 1
 	}

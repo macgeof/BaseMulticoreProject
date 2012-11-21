@@ -5,17 +5,23 @@
  */
 package com.generatorsystems.puremvc.multicore.cores.logger
 {
+	import com.gb.puremvc.interfaces.ICoreFacade;
 	import com.gb.puremvc.model.enum.GBNotifications;
 	import com.gb.puremvc.patterns.GBCoreFacade;
+	import com.generatorsystems.projects.multicoredemo.model.enums.Cores;
+	import com.generatorsystems.projects.multicoredemo.view.LoggingJunctionMediator;
 	import com.generatorsystems.puremvc.multicore.cores.logger.controller.CreateLogButtonCommand;
 	import com.generatorsystems.puremvc.multicore.cores.logger.controller.CreateLogWindowCommand;
 	import com.generatorsystems.puremvc.multicore.cores.logger.controller.LogMessageCommand;
 	import com.generatorsystems.puremvc.multicore.cores.logger.controller.StartupCommand;
+	import com.generatorsystems.puremvc.multicore.cores.logger.model.LoggerProxy;
+	import com.generatorsystems.puremvc.multicore.cores.logger.view.LoggerJunctionMediator;
+	import com.generatorsystems.puremvc.multicore.cores.logger.view.LoggerMediator;
 
 	/**
 	 * Application Facade for Logger Module.
 	 */ 
-	public class LoggerFacade extends GBCoreFacade
+	public class LoggerFacade extends GBCoreFacade implements ICoreFacade
 	{
         public static const STARTUP:String 				= 'startup';
         public static const LOG_MSG:String 				= 'logMessage';
@@ -63,6 +69,21 @@ package com.generatorsystems.puremvc.multicore.cores.logger
 			 
 			 registerCommand(GBNotifications.STARTUP, startupCommand);
 			 sendNotification(GBNotifications.STARTUP, core);
+		 }
+		 
+		 override public function destroy():void
+		 {
+			 //remov e all commands
+			 removeCommand(STARTUP);
+			 removeCommand(LOG_MSG);
+			 removeCommand(CREATE_LOG_BUTTON);
+			 removeCommand(CREATE_LOG_WINDOW);
+			 
+			 //remove all mediators
+			 removeMediator(LoggerJunctionMediator.NAME);
+			 
+			 //remove all proxies
+			 removeProxy(LoggerProxy.NAME);
 		 }
 	}
 }

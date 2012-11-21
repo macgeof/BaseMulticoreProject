@@ -6,15 +6,19 @@
 package com.generatorsystems.projects.multicoredemo.view
 {
 	import com.gb.puremvc.GBPipeAwareFlexCore;
+	import com.gb.puremvc.model.enum.GBNotifications;
 	import com.gb.puremvc.model.messages.LogMessage;
 	import com.gb.puremvc.model.messages.UIQueryMessage;
 	import com.generatorsystems.projects.multicoredemo.ShellFacade;
+	import com.generatorsystems.projects.multicoredemo.model.enums.Cores;
 	import com.generatorsystems.puremvc.multicore.cores.logger.LoggerModule;
 	
 	import org.puremvc.as3.multicore.interfaces.INotification;
+	import org.puremvc.as3.multicore.patterns.facade.Facade;
 	import org.puremvc.as3.multicore.utilities.pipes.interfaces.IPipeAware;
 	import org.puremvc.as3.multicore.utilities.pipes.interfaces.IPipeFitting;
 	import org.puremvc.as3.multicore.utilities.pipes.interfaces.IPipeMessage;
+	import org.puremvc.as3.multicore.utilities.pipes.messages.Message;
 	import org.puremvc.as3.multicore.utilities.pipes.plumbing.Junction;
 	import org.puremvc.as3.multicore.utilities.pipes.plumbing.Pipe;
 	import org.puremvc.as3.multicore.utilities.pipes.plumbing.TeeMerge;
@@ -60,6 +64,7 @@ package com.generatorsystems.projects.multicoredemo.view
 		override public function listNotificationInterests():Array
 		{
 			var interests:Array = super.listNotificationInterests();
+			interests.push( ShellFacade.KILL_LOGGER);
 			interests.push( ShellFacade.LOGGER_AVAILABLE_TO_CONNECT);
 			interests.push( ShellFacade.REQUEST_LOG_WINDOW );
 			interests.push( ShellFacade.REQUEST_LOG_BUTTON );
@@ -75,6 +80,12 @@ package com.generatorsystems.projects.multicoredemo.view
 			
 			switch( __note.getName() )
 			{
+				case ShellFacade.KILL_LOGGER :
+					sendNotification(LogMessage.SEND_TO_LOG,"Request about to send to destroy Logger core.",LogMessage.LEVELS[LogMessage.DEBUG]);
+					junction.sendMessage(GBPipeAwareFlexCore.STDLOG, new UIQueryMessage(GBNotifications.DESTROY, Cores.LOGGER));
+					trace("logger destroyed = " + (!Facade.hasCore(Cores.LOGGER)));
+					break;
+				
 				case ShellFacade.LOGGER_AVAILABLE_TO_CONNECT :
 					sendNotification(ShellFacade.CONNECT_SHELL_TO_LOGGER, junction );
 					sendNotification(ShellFacade.REQUEST_LOG_BUTTON);
@@ -153,6 +164,10 @@ package com.generatorsystems.projects.multicoredemo.view
 			else if (__message is LogMessage)
 			{
 				junction.sendMessage(GBPipeAwareFlexCore.STDLOG, __message);
+			}
+			else if (__message is Message)
+			{
+				junction.sendMessage(GBPipeAwareFlexCore.STDLOG, new LogMessage(LogMessage.INFO, this.multitonKey, 'Logger core startup pipe message received on STDSHELL'));
 			}
 		}
 	}

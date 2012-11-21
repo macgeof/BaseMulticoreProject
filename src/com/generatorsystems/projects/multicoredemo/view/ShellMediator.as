@@ -24,6 +24,7 @@ package com.generatorsystems.projects.multicoredemo.view
 		public function ShellMediator(__mediatorName:String, __viewComponent:BaseMulticoreProject)
 		{			
 			super(__mediatorName, __viewComponent);
+			
 		}
 		
 		/**
@@ -33,7 +34,8 @@ package com.generatorsystems.projects.multicoredemo.view
 		{
 			super.onRegister();
 			
-			app.addEventListener( BaseMulticoreProject.LOG_LEVEL, onLogLevel );		
+			app.addEventListener( BaseMulticoreProject.LOG_LEVEL, onLogLevel );	
+			app.killCreateLogger.addEventListener(MouseEvent.CLICK, _killCreateLogger_Handler);	
 		}
 		
 		override public function onRemove():void
@@ -128,6 +130,17 @@ package com.generatorsystems.projects.multicoredemo.view
 		{
 			app.removeLogWindow(_logWindow); 	
 			_logWindowDisplayed=false;
+		}
+		
+		private function _killCreateLogger_Handler(__event:MouseEvent):void
+		{
+			var __noteName:String = (app.logButton == null) ? ShellFacade.CREATE_LOGGER : ShellFacade.KILL_LOGGER;
+			if (__noteName == ShellFacade.KILL_LOGGER)
+			{
+				if (app.logButton && app.logButton.hasEventListener(MouseEvent.CLICK)) app.logButton.removeEventListener(MouseEvent.CLICK, onLogButtonClick);
+				app.removeLogGUI();
+			}
+			sendNotification(__noteName);
 		}
 		
 		/**

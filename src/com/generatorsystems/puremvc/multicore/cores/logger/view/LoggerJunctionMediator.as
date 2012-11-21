@@ -73,6 +73,13 @@ package com.generatorsystems.puremvc.multicore.cores.logger.view
 			junction.registerPipe( GBPipeAwareFlexCore.STDIN, Junction.INPUT, __teeMerge );
 		}
 		
+		override public function onRemove():void
+		{
+			super.onRemove();
+			
+			_loggerModule = null;
+		}
+		
 		/**
 		 * List Notification Interests.
 		 * <P>
@@ -109,8 +116,8 @@ package com.generatorsystems.puremvc.multicore.cores.logger.view
 			{
 				//core startup complete
 				case GBNotifications.STARTUP_COMPLETE :
-					/*var __message:Message = new Message(GBNotifications.STARTUP_COMPLETE, loggerCore);
-					__logged = junction.sendMessage(GBPipeAwareFlexCore.STDSHELL, __message);*/
+					var __message:Message = new Message(GBNotifications.STARTUP_COMPLETE, loggerCore);
+					__logged = junction.sendMessage(GBPipeAwareFlexCore.STDSHELL, __message);
 					break;					
 				
 				// Send the LogButton UI Component 
@@ -157,14 +164,22 @@ package com.generatorsystems.puremvc.multicore.cores.logger.view
 		 */
 		override public function handlePipeMessage( __message:IPipeMessage ):void
 		{
+//			sendNotification( LoggerFacade.LOG_MSG, new LogMessage(LogMessage.INFO, this.multitonKey, "Logger core handling pipe message : body = '" + __message.getBody() + "' : header = '" + __message.getHeader() + "' : type = '" + __message.getType() + "'") );
+			var __isMessage:Boolean = __message is Message;
 			if ( __message is LogMessage ) 
 			{
 				sendNotification( LoggerFacade.LOG_MSG, __message );
 			} 
 			else if ( __message is UIQueryMessage )
 			{
+				if (UIQueryMessage(__message).action == GBNotifications.DESTROY)
+				{
+					loggerCore.destroy();
+					return;
+				}
 				switch ( UIQueryMessage(__message).name )
 				{
+					
 					case LoggerModule.LOG_BUTTON_UI:
 						sendNotification(LoggerFacade.CREATE_LOG_BUTTON)
 						break;

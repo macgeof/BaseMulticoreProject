@@ -43,7 +43,8 @@ package com.generatorsystems.projects.multicoredemo.view
 		{
 			var __interests:Array = super.listNotificationInterests();
 			__interests.push(
-				GBNotifications.STARTUP_COMPLETE,
+				ShellFacade.KILL_LOGGER,
+				ShellFacade.CREATE_LOGGER,
 				ShellFacade.CONNECT_MODULE_TO_LOGGER,
 				ShellFacade.CONNECT_SHELL_TO_LOGGER 
 			);
@@ -60,7 +61,11 @@ package com.generatorsystems.projects.multicoredemo.view
 		{
 			switch( __note.getName() )
 			{
-				case GBNotifications.STARTUP_COMPLETE :
+				case ShellFacade.KILL_LOGGER :
+//					viewComponent = null;
+					break;
+				
+				case ShellFacade.CREATE_LOGGER :
 					var __logger:LoggerModule = new LoggerModule();
 					__logger.startup();
 					viewComponent = __logger;
